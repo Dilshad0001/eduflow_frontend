@@ -1,100 +1,17 @@
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import { useNavigate } from "react-router-dom";
-
-// const StudentSubmissionView = () => {
-//   const [submissions, setSubmissions] = useState([]);
-//   const [error, setError] = useState("");
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     const fetchSubmissions = async () => {
-//       const token = localStorage.getItem("access_token");
-
-//       if (!token) {
-//         setError("You are not logged in.");
-//         return;
-//       }
-
-//       try {
-//         const res = await axios.get("http://localhost:8000/student/submission/", {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         });
-//         setSubmissions(res.data);
-//       } catch (err) {
-//         console.error(err);
-//         setError("Failed to load submissions. Redirecting to create profile...");
-//         // Navigate to create profile page after short delay
-//         setTimeout(() => {
-//           navigate("/student/createprofile");
-//         }, 1500);
-//       }
-//     };
-
-//     fetchSubmissions();
-//   }, [navigate]);
-
-//   return (
-//     <div className="max-w-4xl mx-auto p-4">
-//       <h1 className="text-2xl font-bold mb-4">Your Assignment Submissions</h1>
-//       {error && <p className="text-red-600">{error}</p>}
-
-//       {submissions.length === 0 && !error ? (
-//         <p className="text-gray-600">No submissions found.</p>
-//       ) : (
-//         <div className="space-y-4">
-//           {submissions.map((submission) => (
-//             <div key={submission.id} className="p-4 border rounded-lg shadow">
-//               <h2 className="text-xl font-semibold text-indigo-700">
-//                 📘 {submission.assignment}
-//               </h2>
-//               <p className="text-sm text-gray-600">
-//                 Submitted at: {new Date(submission.submitted_at).toLocaleString()}
-//               </p>
-//               <p className="mt-1">
-//                 Status:{" "}
-//                 <span className="font-semibold text-blue-600">{submission.status}</span>
-//               </p>
-//               {submission.mark !== null && (
-//                 <p className="mt-1">
-//                   Mark:{" "}
-//                   <span className="text-green-600 font-semibold">{submission.mark}</span>
-//                 </p>
-//               )}
-//               {submission.file && (
-//                 <a
-//                   href={submission.file}
-//                   className="text-blue-500 underline mt-2 block"
-//                   target="_blank"
-//                   rel="noopener noreferrer"
-//                 >
-//                   📎 View Submitted File
-//                 </a>
-//               )}
-//             </div>
-//           ))}
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default StudentSubmissionView;
-
-
-// ============================================================
+// Assignment Submissions
 
 
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Grid3X3, List, Clock, Calendar, FileText, Download, Star, Award, CheckCircle, AlertTriangle, BookOpen, ExternalLink } from "lucide-react";
 
 const StudentSubmissionView = () => {
   const [submissions, setSubmissions] = useState([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [isCardView, setIsCardView] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -103,6 +20,7 @@ const StudentSubmissionView = () => {
 
       if (!token) {
         setError("You are not logged in.");
+        setLoading(false);
         return;
       }
 
@@ -113,6 +31,7 @@ const StudentSubmissionView = () => {
           },
         });
         setSubmissions(res.data);
+        setError("");
       } catch (err) {
         console.error(err);
         setError("Failed to load submissions. Redirecting to create profile...");
@@ -121,10 +40,21 @@ const StudentSubmissionView = () => {
           navigate("/student/createprofile");
         }, 1500);
       }
+      setLoading(false);
     };
 
     fetchSubmissions();
   }, [navigate]);
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
 
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
@@ -149,182 +79,383 @@ const StudentSubmissionView = () => {
     return 'text-red-600 dark:text-red-400';
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-900 transition-colors duration-300">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Header Section */}
-        <div className="mb-8">
-          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 dark:border-slate-700/50 p-8">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl shadow-lg">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+  const getGradientColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'submitted':
+        return 'from-blue-500 to-blue-600';
+      case 'graded':
+        return 'from-green-500 to-green-600';
+      case 'pending':
+        return 'from-yellow-500 to-yellow-600';
+      case 'rejected':
+        return 'from-red-500 to-red-600';
+      default:
+        return 'from-gray-500 to-gray-600';
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'submitted':
+        return <CheckCircle className="w-4 h-4 text-white" />;
+      case 'graded':
+        return <Award className="w-4 h-4 text-white" />;
+      case 'pending':
+        return <Clock className="w-4 h-4 text-white" />;
+      case 'rejected':
+        return <AlertTriangle className="w-4 h-4 text-white" />;
+      default:
+        return <FileText className="w-4 h-4 text-white" />;
+    }
+  };
+
+  // Card View Component
+  const CardView = () => (
+    <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      {submissions.map((submission, index) => (
+        <div key={submission.id} className="group bg-white rounded-2xl shadow-sm hover:shadow-lg border border-gray-200 overflow-hidden transition-all duration-300 transform hover:scale-[1.02] hover:-translate-y-1 hover:border-blue-300 h-full">
+          {/* Status Header */}
+          <div className={`h-2 bg-gradient-to-r ${getGradientColor(submission.status)}`}></div>
+          
+          {/* Card Content */}
+          <div className="p-6">
+            {/* Header with Status */}
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                <div className={`w-10 h-10 bg-gradient-to-br ${getGradientColor(submission.status)} rounded-xl flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-110`}>
+                  {getStatusIcon(submission.status)}
+                </div>
               </div>
-              <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-indigo-600 dark:from-white dark:to-indigo-300 bg-clip-text text-transparent">
-                  Assignment Submissions
-                </h1>
-                <p className="text-slate-600 dark:text-slate-300 mt-1">
-                  Track your submitted assignments and grades
+              <div className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(submission.status)}`}>
+                {submission.status}
+              </div>
+            </div>
+
+            {/* Assignment Title */}
+            <h3 className="font-bold text-lg text-gray-900 mb-3 group-hover:text-blue-600 transition-colors duration-200 line-clamp-2">
+              {submission.assignment}
+            </h3>
+
+            {/* Grade Display */}
+            {submission.mark !== null && (
+              <div className="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-100">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-600">Grade</span>
+                  <div className="flex items-center space-x-1">
+                    <span className={`text-2xl font-bold ${getMarkColor(submission.mark)}`}>
+                      {submission.mark}
+                    </span>
+                    <span className="text-gray-500 text-sm">/100</span>
+                  </div>
+                </div>
+                {/* Grade Progress Bar */}
+                <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
+                  <div 
+                    className={`h-full rounded-full transition-all duration-1000 ease-out ${
+                      submission.mark >= 90 ? 'bg-gradient-to-r from-emerald-400 to-emerald-600' :
+                      submission.mark >= 80 ? 'bg-gradient-to-r from-green-400 to-green-600' :
+                      submission.mark >= 70 ? 'bg-gradient-to-r from-yellow-400 to-yellow-600' :
+                      submission.mark >= 60 ? 'bg-gradient-to-r from-orange-400 to-orange-600' :
+                      'bg-gradient-to-r from-red-400 to-red-600'
+                    }`}
+                    style={{ width: `${Math.min(submission.mark, 100)}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Submission Details */}
+            <div className="space-y-3 mb-4">
+              <div className="flex items-center text-sm text-gray-600">
+                <Calendar className="w-4 h-4 mr-2 text-blue-500" />
+                <span>Submitted: {formatDate(submission.submitted_at)}</span>
+              </div>
+            </div>
+
+            {/* View File Button */}
+            {submission.file && (
+              <a
+                href={submission.file}
+                className="w-full inline-flex items-center justify-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-[1.02] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <ExternalLink className="w-5 h-5 mr-2" />
+                View Submission
+              </a>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  // List View Component
+  const ListView = () => (
+    <div className="space-y-3">
+      {submissions.map((submission, index) => (
+        <div key={submission.id} className="group bg-white rounded-xl shadow-sm hover:shadow-md border border-gray-200 overflow-hidden transition-all duration-200 hover:border-blue-300">
+          <div className="p-4">
+            <div className="flex items-center justify-between">
+              {/* Left Section */}
+              <div className="flex items-center space-x-4 flex-1">
+                {/* Status Icon */}
+                <div className={`w-12 h-12 bg-gradient-to-br ${getGradientColor(submission.status)} rounded-xl flex items-center justify-center shadow-sm`}>
+                  {getStatusIcon(submission.status)}
+                </div>
+
+                {/* Submission Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                      Submission
+                    </span>
+                    <span className={`text-xs font-medium px-2 py-1 rounded-full ${getStatusColor(submission.status)}`}>
+                      {submission.status}
+                    </span>
+                    {submission.mark !== null && (
+                      <span className={`text-xs font-medium px-2 py-1 rounded-full bg-blue-100 text-blue-600`}>
+                        Grade: {submission.mark}/100
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors duration-200 truncate">
+                    {submission.assignment}
+                  </h3>
+                  <div className="flex items-center text-sm text-gray-500 mt-1">
+                    <Calendar className="w-4 h-4 mr-1" />
+                    <span>Submitted: {formatDate(submission.submitted_at)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Middle Section - Grade */}
+              {submission.mark !== null && (
+                <div className="hidden md:flex items-center space-x-4 mx-6">
+                  <div className="text-center">
+                    <div className={`text-2xl font-bold ${getMarkColor(submission.mark)}`}>
+                      {submission.mark}
+                    </div>
+                    <div className="text-xs text-gray-500">Grade</div>
+                  </div>
+                </div>
+              )}
+
+              {/* Right Section - Action */}
+              <div className="flex items-center space-x-3">
+                {submission.file && (
+                  <a
+                    href={submission.file}
+                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium text-sm rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    View File
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-center p-12">
+            <div className="text-center space-y-4">
+              <div className="relative">
+                <div className="w-12 h-12 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin mx-auto"></div>
+                <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-r-purple-500 rounded-full animate-spin animate-reverse mx-auto"></div>
+              </div>
+              <p className="text-gray-600 font-medium animate-pulse">Loading your submissions...</p>
+              <div className="flex space-x-1 justify-center">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="max-w-6xl mx-auto space-y-6">
+        {/* Summary Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                <FileText className="w-4 h-4 text-blue-600" />
+              </div>
+              <div className="ml-3">
+                <p className="text-lg font-bold text-blue-900">{submissions.length}</p>
+                <p className="text-xs text-blue-700">Total Submissions</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-green-50 rounded-xl p-4 border border-green-100">
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                <Award className="w-4 h-4 text-green-600" />
+              </div>
+              <div className="ml-3">
+                <p className="text-lg font-bold text-green-900">
+                  {submissions.filter(s => s.status?.toLowerCase() === 'graded').length}
                 </p>
+                <p className="text-xs text-green-700">Graded</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-100">
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <Clock className="w-4 h-4 text-yellow-600" />
+              </div>
+              <div className="ml-3">
+                <p className="text-lg font-bold text-yellow-900">
+                  {submissions.filter(s => s.status?.toLowerCase() === 'pending').length}
+                </p>
+                <p className="text-xs text-yellow-700">Pending</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-purple-50 rounded-xl p-4 border border-purple-100">
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                <Star className="w-4 h-4 text-purple-600" />
+              </div>
+              <div className="ml-3">
+                <p className="text-lg font-bold text-purple-900">
+                  {submissions.filter(s => s.mark >= 90).length}
+                </p>
+                <p className="text-xs text-purple-700">A+ Grades</p>
               </div>
             </div>
           </div>
         </div>
 
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <p className="text-gray-600 mt-1">
+              {submissions.length} submission{submissions.length !== 1 ? 's' : ''} found
+            </p>
+          </div>
+          
+          {/* View Toggle Switch */}
+          {submissions.length > 0 && (
+            <div className="flex items-center space-x-3">
+              <span className={`text-sm font-medium ${!isCardView ? 'text-gray-900' : 'text-gray-500'}`}>
+                List
+              </span>
+              <List className={`w-4 h-4 ${!isCardView ? 'text-gray-900' : 'text-gray-400'}`} />
+              
+              {/* Toggle Switch */}
+              <button
+                onClick={() => setIsCardView(!isCardView)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                  isCardView ? 'bg-blue-600' : 'bg-gray-300'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ease-in-out ${
+                    isCardView ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+              
+              <Grid3X3 className={`w-4 h-4 ${isCardView ? 'text-gray-900' : 'text-gray-400'}`} />
+              <span className={`text-sm font-medium ${isCardView ? 'text-gray-900' : 'text-gray-500'}`}>
+                Cards
+              </span>
+            </div>
+          )}
+        </div>
+
         {/* Error Message */}
         {error && (
-          <div className="mb-6">
-            <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-400 p-4 rounded-r-lg shadow-md">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <svg className="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <p className="ml-3 text-red-700 dark:text-red-300 font-medium">{error}</p>
+          <div className="bg-red-50 border-l-4 border-red-400 p-6 rounded-r-xl shadow-sm mb-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <AlertTriangle className="w-5 h-5 text-red-500" />
+              </div>
+              <div className="ml-3">
+                <p className="text-red-700 font-medium">{error}</p>
+                <p className="text-red-600 text-sm mt-1">Please try refreshing the page or contact support if the issue persists.</p>
               </div>
             </div>
           </div>
         )}
 
-        {/* No Submissions State */}
-        {submissions.length === 0 && !error ? (
+        {/* Empty State */}
+        {submissions.length === 0 && !error && (
           <div className="text-center py-16">
-            <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 dark:border-slate-700/50 p-12 max-w-md mx-auto">
-              <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600 rounded-full flex items-center justify-center">
-                <svg className="w-12 h-12 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} 
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-2">
-                No Submissions Yet
-              </h3>
-              <p className="text-slate-500 dark:text-slate-400">
-                Your submitted assignments will appear here once you start submitting them.
-              </p>
+            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <FileText className="w-12 h-12 text-gray-400" />
             </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">No Submissions Found</h3>
+            <p className="text-gray-500 max-w-md mx-auto mb-8">
+              Your submitted assignments will appear here once you start submitting them.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
+            >
+              <Clock className="w-4 h-4 mr-2" />
+              Refresh Page
+            </button>
           </div>
-        ) : (
-          /* Submissions Grid */
-          <div className="grid gap-6 md:gap-8">
-            {submissions.map((submission, index) => (
-              <div 
-                key={submission.id} 
-                className="group bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl hover:shadow-2xl border border-white/30 dark:border-slate-700/50 overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:bg-white/80 dark:hover:bg-slate-800/80"
-                style={{
-                  animationDelay: `${index * 100}ms`,
-                  animation: 'fadeInUp 0.6s ease-out forwards'
-                }}
-              >
-                <div className="p-8">
-                  {/* Assignment Header */}
-                  <div className="flex items-start justify-between mb-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="p-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">
-                          {submission.assignment}
-                        </h2>
-                        <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <span>Submitted {new Date(submission.submitted_at).toLocaleString()}</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Status Badge */}
-                    <div className={`px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(submission.status)} shadow-md`}>
-                      {submission.status}
-                    </div>
+        )}
+
+        {/* Submissions Display */}
+        {submissions.length > 0 && (
+          <>
+            {isCardView ? <CardView /> : <ListView />}
+            
+            {/* Submission Summary */}
+            <div className="bg-gray-50 rounded-xl p-6 mt-8 border border-gray-200">
+              <div className="text-center">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Submission Summary</h3>
+                <p className="text-gray-600 mb-4">
+                  Track your academic progress and performance
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-blue-600">{submissions.length}</p>
+                    <p className="text-sm text-gray-500">Total</p>
                   </div>
-
-                  {/* Submission Details */}
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      {/* Mark Display */}
-                      {submission.mark !== null && (
-                        <div className="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-4 border border-slate-200 dark:border-slate-600">
-                          <div className="flex items-center justify-between">
-                            <span className="text-slate-600 dark:text-slate-300 font-medium">Grade</span>
-                            <div className="flex items-center space-x-2">
-                              <span className={`text-3xl font-bold ${getMarkColor(submission.mark)}`}>
-                                {submission.mark}
-                              </span>
-                              <span className="text-slate-500 dark:text-slate-400">/100</span>
-                            </div>
-                          </div>
-                          {/* Grade Bar */}
-                          <div className="mt-3 bg-slate-200 dark:bg-slate-600 rounded-full h-2 overflow-hidden">
-                            <div 
-                              className={`h-full rounded-full transition-all duration-1000 ease-out ${
-                                submission.mark >= 90 ? 'bg-gradient-to-r from-emerald-400 to-emerald-600' :
-                                submission.mark >= 80 ? 'bg-gradient-to-r from-green-400 to-green-600' :
-                                submission.mark >= 70 ? 'bg-gradient-to-r from-yellow-400 to-yellow-600' :
-                                submission.mark >= 60 ? 'bg-gradient-to-r from-orange-400 to-orange-600' :
-                                'bg-gradient-to-r from-red-400 to-red-600'
-                              }`}
-                              style={{ width: `${Math.min(submission.mark, 100)}%` }}
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* File Attachment */}
-                    {submission.file && (
-                      <div className="flex justify-end">
-                        <a
-                          href={submission.file}
-                          className="inline-flex items-center space-x-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <svg className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                              d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                          </svg>
-                          <span>View Submission</span>
-                          <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                          </svg>
-                        </a>
-                      </div>
-                    )}
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-green-600">
+                      {submissions.filter(s => s.status?.toLowerCase() === 'graded').length}
+                    </p>
+                    <p className="text-sm text-gray-500">Graded</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-yellow-600">
+                      {submissions.filter(s => s.status?.toLowerCase() === 'pending').length}
+                    </p>
+                    <p className="text-sm text-gray-500">Pending</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-purple-600">
+                      {submissions.filter(s => s.mark >= 90).length}
+                    </p>
+                    <p className="text-sm text-gray-500">A+ Grades</p>
                   </div>
                 </div>
-
-                {/* Bottom Border Accent */}
-                <div className="h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
-            ))}
-          </div>
+            </div>
+          </>
         )}
       </div>
-
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 };

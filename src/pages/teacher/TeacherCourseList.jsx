@@ -1,236 +1,244 @@
-// import { useEffect, useState } from "react";
-// import axios from "axios";
-// import { Link } from "react-router-dom";
 
-// function TeacherCourseList() {
-//   const [courses, setCourses] = useState([]);
-//   const [loading, setLoading] = useState(false);
-
-//   const token = localStorage.getItem("access_token"); // token stored here
-
-//   const fetchCourses = async () => {
-//     setLoading(true);
-//     try {
-//       const response = await axios.get(
-//         "http://localhost:8000/teacher/course",
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-//       setCourses(response.data);
-//     } catch (error) {
-//       console.error("Error fetching courses:", error);
-//       setCourses([]);
-//     }
-//     setLoading(false);
-//   };
-
-//   useEffect(() => {
-//     fetchCourses();
-//   }, []);
-
-//   return (
-//     <div className="min-h-screen p-6 bg-gray-100">
-//       <div className="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow">
-//         <h1 className="text-2xl font-bold mb-4">Courses List</h1>
-
-//         {loading ? (
-//           <div className="text-center py-10">Loading courses...</div>
-//         ) : (
-//           <table className="min-w-full border border-gray-300 rounded-lg">
-//             <thead>
-//               <tr className="bg-gray-200">
-//                 <th className="py-2 px-4 text-left">#</th>
-//                 <th className="py-2 px-4 text-left">Course Name</th>
-//               </tr>
-//             </thead>
-// <tbody>
-//   {courses.length === 0 ? (
-//     <tr>
-//       <td colSpan="2" className="text-center py-4 text-gray-500">
-//         No courses found
-//       </td>
-//     </tr>
-//   ) : (
-//     courses.map((course, index) => (
-//       <tr key={course.id} className="border-t">
-//         <td className="py-2 px-4">{index + 1}</td>
-//         <td className="py-2 px-4 text-blue-600 hover:underline">
-//           <Link to={`/teacher/course/${course.id}`}>{course.course_name}</Link>
-//         </td>
-//       </tr>
-//     ))
-//   )}
-// </tbody>
-
-//           </table>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default TeacherCourseList;
-
-
-
-
-// =========================================================
-
+// Your Courses
 
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { BookOpen, Users, Clock, ChevronRight, Grid3X3, List, Search, Filter } from "lucide-react";
 
 function TeacherCourseList() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [viewMode, setViewMode] = useState("list"); // "list" or "card"
 
   const token = localStorage.getItem("access_token"); // token stored here
 
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      // Simulated API call for demo purposes
-      setTimeout(() => {
-        setCourses([
-          { id: 1, course_name: "Advanced React Development" },
-          { id: 2, course_name: "Data Structures & Algorithms" },
-          { id: 3, course_name: "Machine Learning Fundamentals" },
-          { id: 4, course_name: "Web Design Principles" }
-        ]);
-        setLoading(false);
-      }, 1500);
+      const response = await axios.get(
+        "http://localhost:8000/teacher/course",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setCourses(response.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
       setCourses([]);
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchCourses();
   }, []);
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800 p-6">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div className="w-full h-full" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`,
-          backgroundSize: '20px 20px'
-        }}></div>
-      </div>
-      
-      <div className="relative z-10 max-w-5xl mx-auto">
-        {/* Header Section */}
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-            My Courses
-          </h1>
-          <p className="text-gray-400 text-lg">Manage and explore your teaching courses</p>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-4 rounded-full"></div>
-        </div>
-
-        {/* Main Content Card */}
-        <div className="bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-2xl shadow-2xl overflow-hidden">
-          {/* Glass Effect Header */}
-          <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 p-6 border-b border-gray-700/50">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                <h2 className="text-xl font-semibold text-white">Course Dashboard</h2>
+  const renderCourseCards = () => (
+    <div className="grid grid-cols-4 gap-6 ">
+      {courses.map((course, index) => (
+        <Link
+          key={course.id}
+          to={`/teacher/course/${course.id}`}
+          className="group bg-white rounded-xl border border-gray-100 hover:border-green-200 hover:shadow-lg transition-all duration-300 overflow-hidden"
+        >
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
+                {index + 1}
               </div>
-              <div className="text-sm text-gray-400">
-                {courses.length} {courses.length === 1 ? 'Course' : 'Courses'}
+              <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-green-500 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-green-700 transition-colors">
+              {course.course_name}
+            </h3>
+            <p className="text-gray-500 text-sm mb-4">Course Management</p>
+            <div className="flex items-center justify-between text-xs text-gray-400">
+              <span className="bg-gray-50 px-2 py-1 rounded-full">Active</span>
+              <span>ID: {course.id}</span>
+            </div>
+          </div>
+          <div className="h-1 bg-gradient-to-r from-green-500 to-green-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+        </Link>
+      ))}
+    </div>
+  );
+
+  const renderCourseList = () => (
+    <div className="bg-gray-200 rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-gray-50 border-b border-gray-100 px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+            <h2 className="text-xl font-semibold text-gray-900">Course Dashboard</h2>
+          </div>
+          <div className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-medium border border-green-200">
+            {courses.length} {courses.length === 1 ? 'Course' : 'Courses'}
+          </div>
+        </div>
+      </div>
+      <div>
+        {courses.map((course, index) => (
+          <Link
+            key={course.id}
+            to={`/teacher/course/${course.id}`}
+            className="flex items-center justify-between px-6 py-5 hover:bg-green-50 border-b border-gray-100 transition-all duration-200 last:border-b-0 group"
+          >
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-105 transition-transform">
+                {index + 1}
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 group-hover:text-green-700 transition-colors">
+                  {course.course_name}
+                </h3>
+                <p className="text-gray-500 text-sm">Click to view course details</p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-green-500 transition-colors" />
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white -mt-12">
+      <div className="container mx-auto px-0 py-1 max-w-7xl">
+
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 h-10 ">
+          <div className="bg-gray-200 border border-gray-100 rounded-xl hover:shadow-lg hover:border-green-200 transition-all duration-300 group h-20">
+            <div className="p-4">
+              <div className="flex items-center justify-between  ">
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">Total Courses</p>
+                  <p className="text-3xl font-bold text-gray-900 group-hover:text-green-700 transition-colors">
+                    {courses.length}
+                  </p>
+                </div>
+                <div className="p-3 bg-green-50 rounded-xl border border-green-100 group-hover:bg-green-100 transition-colors">
+                  <BookOpen className="w-6 h-6 text-green-600" />
+                </div>
               </div>
             </div>
           </div>
 
+          <div className="bg-gray-200 border border-gray-100 rounded-xl hover:shadow-lg hover:border-green-200 transition-all duration-300 group h-20">
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">Active Students</p>
+                  <p className="text-3xl font-bold text-gray-900 group-hover:text-green-700 transition-colors">2,847</p>
+                </div>
+                <div className="p-3 bg-green-50 rounded-xl border border-green-100 group-hover:bg-green-100 transition-colors">
+                  <Users className="w-6 h-6 text-green-600" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-200 border border-gray-100 rounded-xl hover:shadow-lg hover:border-green-200 transition-all duration-300 group h-20">
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">Total Hours</p>
+                  <p className="text-3xl font-bold text-gray-900 group-hover:text-green-700 transition-colors">156h</p>
+                </div>
+                <div className="p-3 bg-green-50 rounded-xl border border-green-100 group-hover:bg-green-100 transition-colors">
+                  <Clock className="w-6 h-6 text-green-600" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Controls Bar */}
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm mb-6 p-4">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Search courses..."
+                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-50"
+                />
+              </div>
+              <button className="flex items-center space-x-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                <Filter className="w-4 h-4 text-gray-500" />
+                <span className="text-gray-700">Filter</span>
+              </button>
+            </div>
+            
+            <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
+              <button
+                onClick={() => setViewMode("list")}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-all ${
+                  viewMode === "list"
+                    ? "bg-white text-green-700 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                <List className="w-4 h-4" />
+                {/* <span className="text-sm font-medium">List</span> */}
+              </button>
+              <button
+                onClick={() => setViewMode("card")}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-all ${
+                  viewMode === "card"
+                    ? "bg-white text-green-700 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                <Grid3X3 className="w-4 h-4" />
+                {/* <span className="text-sm font-medium">Cards</span> */}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div>
           {loading ? (
-            <div className="p-12 text-center">
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-12 text-center">
               <div className="inline-flex items-center space-x-3">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400"></div>
-                <span className="text-gray-300 text-lg">Loading courses...</span>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+                <span className="text-gray-600 text-lg">Loading courses...</span>
               </div>
             </div>
           ) : (
-            <div className="overflow-hidden">
+            <>
               {courses.length === 0 ? (
-                <div className="p-12 text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-700/50 flex items-center justify-center">
-                    <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z" />
-                    </svg>
+                <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-12 text-center text-gray-600">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <BookOpen className="w-8 h-8 text-gray-400" />
                   </div>
-                  <h3 className="text-xl font-medium text-gray-300 mb-2">No courses found</h3>
-                  <p className="text-gray-500">Start by creating your first course</p>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No courses found</h3>
+                  <p className="text-gray-500 mb-6">Start by creating your first course</p>
+                  <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                    Create Course
+                  </button>
                 </div>
               ) : (
-                <div className="divide-y divide-gray-700/50">
-                  {courses.map((course, index) => (
-                    <a 
-                      key={course.id} 
-                      href={`/teacher/course/${course.id}`}
-                      className="block group"
-                    >
-                      <div className="p-6 hover:bg-gray-700/30 transition-all duration-300 transform hover:scale-[1.01]">
-                        <div className="flex items-center space-x-4">
-                          {/* Course Number Badge */}
-                          <div className="flex-shrink-0">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:shadow-blue-500/25 transition-all duration-300">
-                              {index + 1}
-                            </div>
-                          </div>
-                          
-                          {/* Course Info */}
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors duration-300 truncate">
-                              {course.course_name}
-                            </h3>
-                            <p className="text-gray-400 text-sm mt-1">
-                              Click to view course details
-                            </p>
-                          </div>
-                          
-                          {/* Arrow Icon */}
-                          <div className="flex-shrink-0">
-                            <svg 
-                              className="w-5 h-5 text-gray-500 group-hover:text-blue-400 group-hover:translate-x-1 transition-all duration-300" 
-                              fill="none" 
-                              stroke="currentColor" 
-                              viewBox="0 0 24 24"
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                          </div>
-                        </div>
-                        
-                        {/* Hover Effect Line */}
-                        <div className="h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 mt-4 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
-                      </div>
-                    </a>
-                  ))}
-                </div>
+                <>
+                  {viewMode === "card" ? renderCourseCards() : renderCourseList()}
+                </>
               )}
-            </div>
+            </>
           )}
         </div>
-
-        {/* Footer Stats */}
-        {courses.length > 0 && (
-          <div className="mt-8 text-center">
-            <div className="inline-flex items-center space-x-2 bg-gray-800/30 backdrop-blur-sm border border-gray-700/50 rounded-full px-6 py-3">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-gray-300 text-sm">
-                Successfully loaded {courses.length} course{courses.length !== 1 ? 's' : ''}
-              </span>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
 }
 
 export default TeacherCourseList;
+
+
+// Course Dashboard
+
+// List

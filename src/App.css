@@ -1,0 +1,67 @@
+/* Base styles - these will be applied by default (often correspond to light theme) */
+:root {
+  --background-color: #ffffff; /* White */
+  --text-color: #333333;       /* Dark gray */
+  --primary-color: #007bff;    /* Blue */
+  --secondary-color: #6c757d;  /* Gray */
+  --border-color: #dddddd;     /* Light gray */
+  /* Add more variables for other elements like card backgrounds, button colors etc. */
+}
+
+/* Dark theme specific styles */
+html.dark {
+  --background-color: #1a202c; /* Dark charcoal */
+  --text-color: #e2e8f0;       /* Off-white */
+  --primary-color: #63b3ed;    /* Lighter blue for contrast */
+  --secondary-color: #a0aec0;  /* Lighter gray */
+  --border-color: #4a5568;     /* Darker gray for borders */
+}
+
+/* Apply these variables to your elements */
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+}
+
+/* Example for other elements */
+.container {
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* You will need to go through your components and apply these CSS variables */
+/* For example, if you have a header component */
+.header {
+  background-color: var(--primary-color);
+  color: var(--text-color); /* Or white if primary color is dark enough */
+}
+
+/* Adjust as needed for cards, forms, etc. */
+.card {
+    background-color: var(--background-color); /* or a slightly different shade */
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+input, textarea, select {
+    background-color: var(--background-color); /* or a slightly different shade */
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}

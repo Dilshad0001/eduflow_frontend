@@ -1,302 +1,462 @@
-// import React, { useEffect, useState } from 'react';
-// import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
-
-// const StudentProfile = () => {
-//   const [profile, setProfile] = useState(null);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState('');
-//   const navigate = useNavigate(); // initialize navigation
-
-//   useEffect(() => {
-//     axios
-//       .get('http://127.0.0.1:8000/student/personal/profile/', {
-//         headers: {
-//           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-//         },
-//       })
-//       .then((res) => {
-//         if (Array.isArray(res.data) && res.data.length > 0) {
-//           setProfile(res.data[0]);
-//         } else {
-//           setError('Profile not found');
-//           navigate("/student/createprofile");
-//         }
-//         setLoading(false);
-//       })
-//       .catch((err) => {
-//         console.error(err);
-//         setError('Error fetching profile');
-//         setLoading(false);
-        
-//       });
-//   }, []);
-
-//   const handleUpdateClick = () => {
-//     navigate('/student/profile/update');
-//   };
-
-//   if (loading) return <div className="p-4">Loading...</div>;
-//   if (error) return <div className="p-4 text-red-500">{error}</div>;
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 py-10 px-4">
-//       <h1 className="text-3xl font-bold text-center mb-10">Student Profile</h1>
-//       <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-md">
-//         <div className="mb-4">
-//           <strong className="block text-gray-700">Full Name:</strong>
-//           <span>{profile.full_name}</span>
-//         </div>
-//         <div className="mb-4">
-//           <strong className="block text-gray-700">Phone Number:</strong>
-//           <span>{profile.phone_number}</span>
-//         </div>
-//         <div className="mb-4">
-//           <strong className="block text-gray-700">Course:</strong>
-//           <span>{profile.course}</span>
-//         </div>
-//         <button
-//           onClick={handleUpdateClick}
-//           className="mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
-//         >
-//           Update Profile
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default StudentProfile;
-
-
-// ======================================================================
-
-
-
-
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import {
+  User,
+  Shield,
+  Sliders,
+  Users,
+  MapPin,
+  BookOpen,
+  Wallet,
+  ShoppingCart,
+  Edit,
+  AlertCircle,
+  Loader2,
+  ChevronDown,
+} from 'lucide-react';
 
 const StudentProfile = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // initialize navigation
+  const [activeSection, setActiveSection] = useState('personalDetails');
+  const navigate = useNavigate();
+
+  // REMOVE API_BASE_URL constant, it's not needed for profile_picture now
 
   useEffect(() => {
-    axios
-      .get('http://127.0.0.1:8000/student/personal/profile/', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        },
-      })
-      .then((res) => {
-        if (Array.isArray(res.data) && res.data.length > 0) {
-          setProfile(res.data[0]);
+    const fetchProfile = async () => {
+      try {
+        // Keep the axios call to the backend for data fetch
+        const res = await axios.get('http://127.0.0.1:8000/student/profile/', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        });
+
+        if (res.data) {
+          setProfile(res.data);
+          console.log("profile==", res.data);
+
         } else {
-          setError('Profile not found');
+          setError('Profile not found. Please create your profile.');
           navigate("/student/createprofile");
         }
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+        setError('Failed to load profile. Please try again later.');
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError('Error fetching profile');
-        setLoading(false);
-        
-      });
-  }, []);
+      }
+    };
+
+    fetchProfile();
+  }, [navigate]);
 
   const handleUpdateClick = () => {
     navigate('/student/profile/update');
   };
 
+
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-900 flex items-center justify-center">
-        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 dark:border-slate-700/50 p-8">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 border-4 border-indigo-200 dark:border-indigo-600 border-t-indigo-600 dark:border-t-indigo-400 rounded-full animate-spin"></div>
-            <div>
-              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Loading Profile</h3>
-              <p className="text-slate-600 dark:text-slate-400">Please wait while we fetch your information...</p>
-            </div>
-          </div>
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-8 max-w-sm w-full text-center">
+          <Loader2 className="w-16 h-16 text-blue-500 animate-spin mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">Loading Profile...</h3>
+          <p className="text-gray-600">Getting your details ready.</p>
         </div>
       </div>
     );
   }
 
-  if (error) {
+  if (error || !profile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-900 flex items-center justify-center">
-        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 dark:border-slate-700/50 p-8 max-w-md">
-          <div className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
-              <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-              </svg>
-            </div>
-            <h3 className="text-lg font-semibold text-red-600 dark:text-red-400 mb-2">Error Loading Profile</h3>
-            <p className="text-slate-600 dark:text-slate-400">{error}</p>
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-8 max-w-sm w-full text-center">
+          <div className="w-20 h-20 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+            <AlertCircle className="w-10 h-10 text-red-600" />
           </div>
+          <h3 className="text-xl font-semibold text-red-700 mb-2">Error</h3>
+          <p className="text-gray-600">{error}</p>
+          {error.includes("create your profile") && (
+            <button
+              onClick={() => navigate("/student/createprofile")}
+              className="mt-6 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition-colors"
+            >
+              Create Profile
+            </button>
+          )}
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-900 transition-colors duration-300">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <div className="inline-block bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 dark:border-slate-700/50 p-8">
-            <div className="flex items-center justify-center space-x-4 mb-4">
-              <div className="p-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl shadow-lg">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
-              <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-indigo-600 dark:from-white dark:to-indigo-300 bg-clip-text text-transparent">
-                  Student Profile
-                </h1>
-                <p className="text-slate-600 dark:text-slate-300 mt-1">
-                  View and manage your personal information
-                </p>
-              </div>
-            </div>
+  const SidebarItem = ({ icon: Icon, label, sectionName }) => (
+    <li
+      className={`flex items-center p-4 rounded-lg cursor-pointer transition-colors duration-200 ${
+        activeSection === sectionName
+          ? 'bg-blue-50 text-blue-700 font-semibold'
+          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800'
+      }`}
+      onClick={() => setActiveSection(sectionName)}
+    >
+      <Icon className="w-5 h-5 mr-3" />
+      <span>{label}</span>
+      {sectionName === 'academicDetails' && (
+        <ChevronDown className="ml-auto w-4 h-4 text-gray-400" />
+      )}
+    </li>
+  );
+
+  // Personal Details Component
+  const PersonalDetails = () => (
+    <div className="p-8">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Personal Details</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-8">
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Full Name</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.personal_detail?.full_name || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Date of Birth</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.personal_detail?.date_of_birth || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Gender</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.personal_detail?.gender === 'M' ? 'Male' :
+              profile.personal_detail?.gender === 'F' ? 'Female' : 'Other'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Mobile Number</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.personal_detail?.mobile_number || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Alternate Number</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.personal_detail?.alternate_number || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Nationality</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.personal_detail?.nationality || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Blood Group</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.personal_detail?.blood_group || 'N/A'}
           </div>
         </div>
 
-        {/* Profile Card */}
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/30 dark:border-slate-700/50 overflow-hidden">
-            {/* Profile Header */}
-            <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-8 text-white relative overflow-hidden">
-              <div className="absolute inset-0 bg-black/10"></div>
-              <div className="relative z-10 text-center">
-                <div className="w-24 h-24 mx-auto mb-4 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-4 border-white/30">
-                  <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-                <h2 className="text-2xl font-bold mb-2">{profile.full_name}</h2>
-                <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
-                  <span className="font-medium">Student</span>
-                </div>
-              </div>
-              
-              {/* Decorative Elements */}
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full"></div>
-              <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-white/5 rounded-full"></div>
-            </div>
+      </div>
+      <div className="flex justify-end pt-6 border-t border-gray-200">
+        <button
+          onClick={handleUpdateClick}
+          className="px-6 py-3 bg-orange-500 text-white font-medium rounded-lg shadow-md hover:bg-orange-600 transition-colors"
+        >
+          Update Personal Details
+        </button>
+      </div>
+    </div>
+  );
 
-            {/* Profile Details */}
-            <div className="p-8 space-y-6">
-              {/* Full Name */}
-              <div className="group">
-                <div className="bg-slate-50 dark:bg-slate-700/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition-all duration-300 hover:shadow-lg">
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-xl">
-                      <svg className="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Full Name</p>
-                      <p className="text-xl font-bold text-slate-800 dark:text-slate-200 mt-1">{profile.full_name}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Phone Number */}
-              <div className="group">
-                <div className="bg-slate-50 dark:bg-slate-700/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition-all duration-300 hover:shadow-lg">
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-xl">
-                      <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Phone Number</p>
-                      <p className="text-xl font-bold text-slate-800 dark:text-slate-200 mt-1">{profile.phone_number}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Course */}
-              <div className="group">
-                <div className="bg-slate-50 dark:bg-slate-700/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition-all duration-300 hover:shadow-lg">
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl">
-                      <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                      </svg>
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Course</p>
-                      <p className="text-xl font-bold text-slate-800 dark:text-slate-200 mt-1">{profile.course}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Update Profile Button */}
-              <div className="pt-4">
-                <button
-                  onClick={handleUpdateClick}
-                  className="group w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
-                >
-                  <div className="flex items-center justify-center space-x-3">
-                    <svg className="w-6 h-6 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    <span className="text-lg">Update Profile</span>
-                    <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </button>
-              </div>
-            </div>
-
-            {/* Bottom Accent */}
-            <div className="h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+  // Preferences Component
+  const Preferences = () => (
+    <div className="p-8">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">My Preferences</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-8">
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Language</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.preference?.language || 'N/A'}
           </div>
-
-          {/* Additional Info Card */}
-          <div className="mt-8 bg-slate-100/50 dark:bg-slate-800/30 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
-            <div className="flex items-center space-x-3">
-              <svg className="w-6 h-6 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <div>
-                <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1">Profile Information</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Keep your profile information up to date to ensure smooth communication and course management. 
-                  You can update your details anytime by clicking the update button above.
-                </p>
-              </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Theme</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.preference?.theme || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Learning Mode</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.preference?.learning_mode || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Timezone</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.preference?.timezone || 'N/A'}
+          </div>
+        </div>
+        <div className="md:col-span-2">
+          <label className="block text-gray-700 text-sm font-medium mb-2">Notifications</label>
+          <div className="space-y-2">
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                checked={profile.preference?.notifications_email || false}
+                readOnly
+                className="mr-2"
+              />
+              <span>Email Notifications</span>
+            </div>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                checked={profile.preference?.notifications_sms || false}
+                readOnly
+                className="mr-2"
+              />
+              <span>SMS Notifications</span>
+            </div>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                checked={profile.preference?.course_reminders || false}
+                readOnly
+                className="mr-2"
+              />
+              <span>Course Reminders</span>
             </div>
           </div>
+        </div>
+      </div>
+      <div className="flex justify-end pt-6 border-t border-gray-200">
+        <button
+          onClick={handleUpdateClick}
+          className="px-6 py-3 bg-orange-500 text-white font-medium rounded-lg shadow-md hover:bg-orange-600 transition-colors"
+        >
+          Update Preferences
+        </button>
+      </div>
+    </div>
+  );
+
+  // Guardian Details Component
+  const GuardianDetails = () => (
+    <div className="p-8">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Guardian Details</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-8">
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Full Name</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.guardian_detail?.full_name || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Relationship</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.guardian_detail?.relationship || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Contact Number</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.guardian_detail?.contact_number || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Email</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.guardian_detail?.email || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Occupation</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.guardian_detail?.occupation || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Emergency Contact</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.guardian_detail?.emergency_contact || 'N/A'}
+          </div>
+        </div>
+        <div className="md:col-span-2">
+          <label className="block text-gray-700 text-sm font-medium mb-2">Address</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.guardian_detail?.address || 'N/A'}
+          </div>
+        </div>
+      </div>
+      <div className="flex justify-end pt-6 border-t border-gray-200">
+        <button
+          onClick={handleUpdateClick}
+          className="px-6 py-3 bg-orange-500 text-white font-medium rounded-lg shadow-md hover:bg-orange-600 transition-colors"
+        >
+          Update Guardian Details
+        </button>
+      </div>
+    </div>
+  );
+
+  // Address Details Component
+  const AddressDetails = () => (
+    <div className="p-8">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Address Details</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-8">
+        <div className="md:col-span-2">
+          <label className="block text-gray-700 text-sm font-medium mb-2">Current Address</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.address_detail?.current_address || 'N/A'}
+          </div>
+        </div>
+        <div className="md:col-span-2">
+          <label className="block text-gray-700 text-sm font-medium mb-2">Permanent Address</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.address_detail?.permanent_address || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">City</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.address_detail?.city || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">State</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.address_detail?.state || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Country</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.address_detail?.country || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Postal Code</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.address_detail?.postal_code || 'N/A'}
+          </div>
+        </div>
+      </div>
+      <div className="flex justify-end pt-6 border-t border-gray-200">
+        <button
+          onClick={handleUpdateClick}
+          className="px-6 py-3 bg-orange-500 text-white font-medium rounded-lg shadow-md hover:bg-orange-600 transition-colors"
+        >
+          Update Address Details
+        </button>
+      </div>
+    </div>
+  );
+
+  // Academic Details Component
+  const AcademicDetails = () => (
+    <div className="p-8">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Academic Details</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-8">
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Institution</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.academic_detail?.institution || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Education Level</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.academic_detail?.education_level || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Course/Stream</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.academic_detail?.course_stream || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Roll Number</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.academic_detail?.roll_number || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Year of Study</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.academic_detail?.year_of_study || 'N/A'}
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Enrollment Status</label>
+          <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            {profile.academic_detail?.enrollment_status || 'N/A'}
+          </div>
+        </div>
+        {profile.academic_detail?.document_upload && (
+          <div className="md:col-span-2">
+            <label className="block text-gray-700 text-sm font-medium mb-2">Document</label>
+            <a
+              href={profile.academic_detail.document_upload} // Changed line
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline"
+            >
+              View Uploaded Document
+            </a>
+          </div>
+        )}
+      </div>
+      <div className="flex justify-end pt-6 border-t border-gray-200">
+        <button
+          onClick={handleUpdateClick}
+          className="px-6 py-3 bg-orange-500 text-white font-medium rounded-lg shadow-md hover:bg-orange-600 transition-colors"
+        >
+          Update Academic Details
+        </button>
+      </div>
+    </div>
+  );
+
+  // Main render
+  return (
+    <div className="min-h-screen bg-gray-100 flex flex-col p-4 sm:p-6">
+
+
+      {/* Main Content Area (Sidebar + Forms) */}
+      <div className="flex flex-1 gap-6 max-w-7xl mx-auto w-full">
+        {/* Left Sidebar Navigation */}
+        <div className="w-72 bg-white rounded-xl shadow-md p-6 flex-shrink-0 h-fit">
+          <ul className="space-y-2">
+            <SidebarItem icon={User} label="Personal Details" sectionName="personalDetails" />
+            <SidebarItem icon={Shield} label="Sign-in & Security" sectionName="signInSecurity" />
+            <SidebarItem icon={Sliders} label="My Preferences" sectionName="myPreferences" />
+            <SidebarItem icon={Users} label="Guardian Details" sectionName="guardianDetails" />
+            <SidebarItem icon={MapPin} label="Address Details" sectionName="addressDetails" />
+            <SidebarItem icon={BookOpen} label="Academic Details" sectionName="academicDetails" />
+            <SidebarItem icon={Wallet} label="My Wallet" sectionName="myWallet" />
+            <SidebarItem icon={ShoppingCart} label="My Purchases" sectionName="myPurchases" />
+          </ul>
+        </div>
+
+        {/* Right Content Area (Forms/Details) */}
+        <div className="flex-1 bg-white rounded-xl shadow-md relative overflow-hidden">
+          {activeSection === 'personalDetails' && <PersonalDetails />}
+          {activeSection === 'myPreferences' && <Preferences />}
+          {activeSection === 'guardianDetails' && <GuardianDetails />}
+          {activeSection === 'addressDetails' && <AddressDetails />}
+          {activeSection === 'academicDetails' && <AcademicDetails />}
+          {!['personalDetails', 'myPreferences', 'guardianDetails', 'addressDetails', 'academicDetails'].includes(activeSection) && (
+            <div className="p-8 text-center text-gray-500">
+              <AlertCircle className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+              <p>Content for "{activeSection}" section will be displayed here.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

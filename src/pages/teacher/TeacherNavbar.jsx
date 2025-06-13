@@ -1,5 +1,113 @@
 
 
+// import React from 'react';
+// import { NavLink, useNavigate } from 'react-router-dom';
+// import { 
+//   BookOpen,
+//   FileText,
+//   User,
+//   Upload,
+//   GraduationCap,
+//   ChevronRight,
+//   Home
+// } from 'lucide-react';
+
+// const navItems = [
+//   { title: 'home', path: '/teacher/dashboard', icon: Home },
+//   { title: 'Courses', path: '/teacher/courses', icon: BookOpen },
+//   { title: 'Upload Task', path: '/teacher/task/upload', icon: Upload },
+//   { title: 'Submitted Tasks', path: '/teacher/task/submitted', icon: FileText },
+// ];
+
+// const TeacherNavbar = () => {
+//   const navigate = useNavigate();
+
+//   const handleProfileClick = () => {
+//     navigate('/teacher/profile');
+//   };
+
+//   return (
+//     <header className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-10">
+//       <div className="px-6 py-4">
+//         <div className="flex items-center justify-between">
+//           <div className="flex items-center space-x-4">
+//             <div className="flex items-center space-x-3">
+//               <div className="bg-gradient-to-r from-green-600 to-green-700 p-2 rounded-xl">
+//                 <GraduationCap className="h-6 w-6 text-white" />
+//               </div>
+//               <span className="text-xl font-bold text-gray-900">Teacher Panel</span>
+//             </div>
+//           </div>
+
+//           <div className="flex items-center space-x-2">
+//             <nav className="hidden md:flex items-center space-x-1">
+//               {navItems.map((item) => (
+//                 <NavLink
+//                   key={item.title}
+//                   to={item.path}
+//                   className={({ isActive }) =>
+//                     `flex items-center px-4 py-2.5 rounded-xl font-medium transition-all ${
+//                       isActive
+//                         ? 'bg-gray-800 text-white shadow-lg shadow-gray-800/20'
+//                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+//                     }`
+//                   }
+//                 >
+//                   <item.icon className="h-5 w-5 mr-2" />
+//                   {item.title}
+//                 </NavLink>
+//               ))}
+//             </nav>
+
+//             <div className="flex items-center space-x-4 ml-4">
+//               <div className="relative">
+//                 <button className="p-2.5 rounded-xl hover:bg-gray-100 relative transition-colors">
+//                   <div className="h-6 w-6 text-gray-600 relative">
+//                     <span className="absolute -top-1 -right-1 bg-gray-800 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">3</span>
+//                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+//                     </svg>
+//                   </div>
+//                 </button>
+//               </div>
+
+//               {/* ✅ Avatar and Info block navigates to /teacher/profile */}
+//               <div
+//                 onClick={handleProfileClick}
+//                 className="flex items-center space-x-3 bg-gray-50 rounded-xl px-4 py-2 cursor-pointer hover:bg-gray-100 transition"
+//               >
+//                 <div className="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center text-white font-bold">
+//                   TJ
+//                 </div>
+//                 <div className="hidden md:block">
+//                   <p className="font-semibold text-gray-900">Teacher</p>
+//                   <p className="text-sm text-gray-500">Professor</p>
+//                 </div>
+//                 <ChevronRight className="h-4 w-4 text-gray-500 hidden md:block" />
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </header>
+//   );
+// };
+
+// export default TeacherNavbar;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7,128 +115,75 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import {
-  Home,
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { 
   BookOpen,
-  Clock,
-  CheckCircle2,
+  FileText,
   User,
+  Upload,
+  GraduationCap,
+  ChevronRight,
+  Home,
   Bell,
   Search,
   Menu,
   X,
   ChevronDown,
   Settings,
-  LogOut, // Make sure LogOut icon is imported
+  LogOut,
   Moon,
-  Sun,
-  GraduationCap,
-  Calendar,
-  MessageSquare,
-  Award,
-  TrendingUp
+  Sun
 } from 'lucide-react';
-import axios from 'axios';
 
-const StudentNavbar = () => {
+const navItems = [
+  { title: 'Home', path: '/teacher/dashboard', icon: Home },
+  { title: 'Courses', path: '/teacher/courses', icon: BookOpen },
+  { title: 'Upload Task', path: '/teacher/task/upload', icon: Upload },
+  { title: 'Submitted Tasks', path: '/teacher/task/submitted', icon: FileText },
+];
+
+const notifications = [
+  { id: 1, title: 'Assignment Graded', message: 'Math homework graded for Class 10B', time: '1h', type: 'success' },
+  { id: 2, title: 'New Submission', message: '5 new submissions in Physics', time: '3h', type: 'info' },
+  { id: 3, title: 'Meeting Reminder', message: 'Department meeting at 2pm', time: '5h', type: 'urgent' },
+];
+
+const TeacherNavbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const [currentRoute, setCurrentRoute] = useState(location.pathname);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [hasNotifications, setHasNotifications] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [profile, setProfile] = useState();
 
-  useEffect(() => {
-    setCurrentRoute(location.pathname);
-  }, [location.pathname]);
+  const handleProfileClick = () => {
+    navigate('/teacher/profile');
+    setIsProfileDropdownOpen(false);
+  };
 
-  const navItems = [
-    { label: 'Home', route: '/student/dashboard', icon: Home },
-    { label: 'Subjects', route: '/student/subjects', icon: BookOpen },
-    { label: 'Assignments', route: '/student/tasks/pending', icon: Clock, badge: 3 },
-    { label: 'Grades', route: '/student/tasks/completed', icon: Award },
-    { label: 'Schedule', route: '/student/schedule', icon: Calendar },
-    { label: 'Messages', route: '/student/messages', icon: MessageSquare, badge: 2 },
-  ];
-
-  const notifications = [
-    { id: 1, title: 'Assignment Due', message: 'Math homework due in 2 hours', time: '2h', type: 'urgent' },
-    { id: 2, title: 'New Course Material', message: 'Physics chapter 5 uploaded', time: '4h', type: 'info' },
-    { id: 3, title: 'Grade Posted', message: 'Chemistry quiz results available', time: '1d', type: 'success' },
-  ];
-
-  // --- Start of Changes for Logout ---
-  const handleLogout = async () => {
-    try {
-      const refreshToken = localStorage.getItem('refresh_token');
-      if (refreshToken) {
-        // Optional: Call your backend logout endpoint to invalidate the refresh token
-        // This assumes your backend has a /account/logout/ endpoint
-        await axios.post('http://localhost:8000/account/logout/', {
-          refresh: refreshToken
-        }, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`
-          }
-        });
-      }
-    } catch (error) {
-      console.error('Error during backend logout:', error);
-      // Even if backend logout fails, proceed with frontend token removal
-    } finally {
-      // Clear tokens from local storage
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-
-      // Redirect to login page
-      navigate('/login');
-      // Close any open menus
-      setIsProfileDropdownOpen(false);
-      setIsMobileMenuOpen(false);
-    }
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    navigate('/login');
   };
 
   const profileMenuItems = [
-    { label: 'My Profile', icon: User, action: () => handleNavigation('/student/profile') },
-    { label: 'Progress', icon: TrendingUp, action: () => handleNavigation('/student/progress') },
-    { label: 'Settings', icon: Settings, action: () => handleNavigation('/student/settings') },
+    { label: 'My Profile', icon: User, action: handleProfileClick },
+    { label: 'Settings', icon: Settings, action: () => navigate('/teacher/settings') },
     { label: 'Dark Theme', icon: isDarkMode ? Sun : Moon, action: () => setIsDarkMode(!isDarkMode) },
-    { label: 'Sign Out', icon: LogOut, action: handleLogout, danger: true }, // Assign handleLogout here and add 'danger' for styling
+    { label: 'Sign Out', icon: LogOut, action: handleLogout, danger: true },
   ];
-  // --- End of Changes for Logout ---
 
+  const isActiveRoute = (path) => location.pathname === path;
 
-  const handleNavigation = (route) => {
-    navigate(route);
-    setIsMobileMenuOpen(false);
-    setIsProfileDropdownOpen(false);
-    setIsNotificationOpen(false);
+  const getNotificationIcon = (type) => {
+    switch (type) {
+      case 'urgent': return '🔴';
+      case 'success': return '🟢';
+      default: return '🔵';
+    }
   };
-
-  useEffect(() => {
-    axios
-      .get('http://127.0.0.1:8000/student/personal/profile/', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        },
-      })
-      .then((res) => {
-        if (Array.isArray(res.data) && res.data.length > 0) {
-          setProfile(res.data[0]);
-        } else {
-          navigate("/student/createprofile");
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [navigate]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -145,27 +200,17 @@ const StudentNavbar = () => {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const isActiveRoute = (route) => location.pathname === route;
-
-  const getNotificationIcon = (type) => {
-    switch (type) {
-      case 'urgent': return '🔴';
-      case 'success': return '🟢';
-      default: return '🔵';
-    }
-  };
-
   return (
     <nav className={`sticky top-0 z-50 transition-all duration-300 ${
       isDarkMode
         ? 'bg-slate-900/95 border-slate-800/50'
         : 'bg-white/95 border-gray-200/50'
     } backdrop-blur-xl border-b shadow-lg`}>
-      <div className="max-w-7Xl mx-auto px-4 sm:px-6 lg:px-8 h-20 ">
-        <div className="flex items-center justify-between h-21">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20">
+        <div className="flex items-center justify-between h-20">
 
           {/* Logo Section */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => handleNavigation('/student/dashboard')}>
+          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => navigate('/teacher/dashboard')}>
             <div className="relative group">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transform group-hover:scale-105 transition-all duration-300 ${
                 isDarkMode ? 'bg-gradient-to-br from-emerald-500 to-teal-600' : 'bg-gradient-to-br from-emerald-600 to-teal-700'
@@ -181,12 +226,12 @@ const StudentNavbar = () => {
                 EduFlow
               </span>
               <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-500'} -mt-1`}>
-                Where Knowledge Begins
+                Teacher Portal
               </p>
             </div>
           </div>
 
-          {/* Search Bar - Enhanced */}
+          {/* Search Bar */}
           <div className="hidden lg:flex flex-1 max-w-lg mx-8">
             <div className="relative w-full group">
               <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 transition-colors duration-200 ${
@@ -196,7 +241,7 @@ const StudentNavbar = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search courses, assignments, resources..."
+                placeholder="Search courses, students, tasks..."
                 className={`w-full pl-12 pr-4 py-3 rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 ${
                   isDarkMode
                     ? 'bg-slate-800 border-slate-700 text-white placeholder-slate-400 focus:border-emerald-500 focus:bg-slate-700'
@@ -216,14 +261,14 @@ const StudentNavbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">
-            {navItems.slice(0, 4).map((item) => {
+            {navItems.map((item) => {
               const IconComponent = item.icon;
-              const isActive = isActiveRoute(item.route);
+              const isActive = isActiveRoute(item.path);
 
               return (
                 <button
-                  key={item.route}
-                  onClick={() => handleNavigation(item.route)}
+                  key={item.path}
+                  onClick={() => navigate(item.path)}
                   className={`relative group flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 ${
                     isActive
                       ? `${isDarkMode ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/25' : 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/25'}`
@@ -231,13 +276,7 @@ const StudentNavbar = () => {
                   }`}
                 >
                   <IconComponent className="w-4 h-4" />
-                  <span>{item.label}</span>
-
-                  {item.badge && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
-                      {item.badge}
-                    </span>
-                  )}
+                  <span>{item.title}</span>
 
                   {isActive && (
                     <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>
@@ -247,37 +286,8 @@ const StudentNavbar = () => {
             })}
           </div>
 
-          {/* Right Section - Enhanced */}
+          {/* Right Section */}
           <div className="flex items-center space-x-2">
-
-            {/* Quick Actions - Desktop Only */}
-            <div className="hidden xl:flex items-center space-x-1">
-              {navItems.slice(4).map((item) => {
-                const IconComponent = item.icon;
-                const isActive = isActiveRoute(item.route);
-
-                return (
-                  <button
-                    key={item.route}
-                    onClick={() => handleNavigation(item.route)}
-                    className={`relative p-2.5 rounded-xl transition-all duration-200 ${
-                      isActive
-                        ? `${isDarkMode ? 'bg-emerald-600 text-white' : 'bg-emerald-600 text-white'}`
-                        : `${isDarkMode ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-500 hover:text-emerald-700 hover:bg-emerald-50'}`
-                    }`}
-                    title={item.label}
-                  >
-                    <IconComponent className="w-5 h-5" />
-                    {item.badge && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
             {/* Notifications */}
             <div className="relative dropdown-container">
               <button
@@ -289,9 +299,7 @@ const StudentNavbar = () => {
                 }`}
               >
                 <Bell className="w-5 h-5" />
-                {hasNotifications && (
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
-                )}
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
               </button>
 
               {/* Notification Dropdown */}
@@ -311,6 +319,7 @@ const StudentNavbar = () => {
                       <div
                         key={notification.id}
                         className={`p-4 border-b border-slate-200/10 hover:bg-slate-50/50 dark:hover:bg-slate-700/50 transition-colors duration-200 cursor-pointer`}
+                        onClick={() => setIsNotificationOpen(false)}
                       >
                         <div className="flex items-start space-x-3">
                           <span className="text-sm">{getNotificationIcon(notification.type)}</span>
@@ -351,13 +360,14 @@ const StudentNavbar = () => {
                 }`}
               >
                 <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-semibold text-sm">
-                    {profile?.full_name?.charAt(0)?.toUpperCase() || 'U'}
-                  </span>
+                  <span className="text-white font-semibold text-sm">TJ</span>
                 </div>
                 <div className="hidden sm:block text-left">
                   <p className={`text-sm font-medium ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-                    {profile?.full_name || 'Student'}
+                    Teacher
+                  </p>
+                  <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                    Professor
                   </p>
                 </div>
                 <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
@@ -375,30 +385,15 @@ const StudentNavbar = () => {
                   <div className="p-4 border-b border-slate-200/10">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
-                        <span className="text-white font-semibold">
-                          {profile?.full_name?.charAt(0)?.toUpperCase() || 'U'}
-                        </span>
+                        <span className="text-white font-semibold">TJ</span>
                       </div>
                       <div>
                         <p className={`font-semibold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-                          {profile?.full_name || 'Student Name'}
+                          Teacher Johnson
                         </p>
                         <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                          {profile?.email || 'student@university.edu'}
+                          professor@university.edu
                         </p>
-                      </div>
-                    </div>
-                    {/* Progress Bar */}
-                    <div className="mt-3">
-                      <div className="flex justify-between text-xs mb-1">
-                        <span className={isDarkMode ? 'text-slate-400' : 'text-slate-500'}>Course Progress</span>
-                        {/* <span className={isDarkMode ? 'text-slate-400' : 'text-slate-500'}>{profile?.progress || 0}%</span> */}
-                      </div>
-                      <div className={`w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2`}>
-                        <div
-                          className="bg-gradient-to-r from-emerald-500 to-teal-600 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${profile?.progress || 0}%` }}
-                        ></div>
                       </div>
                     </div>
                   </div>
@@ -468,12 +463,15 @@ const StudentNavbar = () => {
             <div className="px-4 pb-4 space-y-2">
               {navItems.map((item) => {
                 const IconComponent = item.icon;
-                const isActive = isActiveRoute(item.route);
+                const isActive = isActiveRoute(item.path);
 
                 return (
                   <button
-                    key={item.route}
-                    onClick={() => handleNavigation(item.route)}
+                    key={item.path}
+                    onClick={() => {
+                      navigate(item.path);
+                      setIsMobileMenuOpen(false);
+                    }}
                     className={`relative w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 ${
                       isActive
                         ? `${isDarkMode ? 'bg-emerald-600 text-white' : 'bg-emerald-600 text-white'} shadow-lg`
@@ -481,13 +479,7 @@ const StudentNavbar = () => {
                     }`}
                   >
                     <IconComponent className="w-5 h-5" />
-                    <span>{item.label}</span>
-
-                    {item.badge && (
-                      <span className="ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                        {item.badge}
-                      </span>
-                    )}
+                    <span>{item.title}</span>
                   </button>
                 );
               })}
@@ -500,6 +492,4 @@ const StudentNavbar = () => {
   );
 };
 
-export default StudentNavbar;
-
-
+export default TeacherNavbar;

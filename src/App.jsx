@@ -45,14 +45,23 @@ import SubmissionDetail from './pages/teacher/SubmissionDetail';
 import CraeteStudentProfileForm from './pages/student/CreateStudentProfileForm';
 import StudentNavbar from './pages/student/StudentNavbar';
 import StudentLayout from './pages/student/StudentLayout';
+import TeacherLayout from './pages/teacher/TeacherLayout';
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminCreateCourse from './pages/admin/AdminCreateCourse';
+import AdminCreateSubject from './pages/admin/AdminCreateSubject';
+import AdminCreateChapter from './pages/admin/AdminCreateChapter';
+import AdminCreateLesson from './pages/admin/AdminCreateLesson';
+import SubjectCylinder from './pages/student/SubjectCylinder';
+import ChapterCylinder from './pages/student/ChapterCylinder';
+import LessonCylinder from './pages/student/LessonCylinder';
+import StudentFooter from './pages/student/StudentFooter';
+import AdBanners from './pages/student/AdBanners';
 
 function App() {
   return (
-    
     <BrowserRouter>
       <Routes>
-
-
+       
         <Route path="/student" element={<StudentLayout />}>
         <Route path="homepage" element={<StudentProfileForm />} />
         <Route path="dashboard" element={<StudentHome />} />
@@ -74,6 +83,42 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Login />} />
 
+
+
+      <Route path="/teacher" element={<TeacherLayout />}>
+        <Route path="dashboard" element={<TeacherDashboard />} />
+        <Route path="profile" element={<TeacherProfile />} />
+        <Route path="courses" element={<TeacherCourseList />} />
+        <Route path="course/:courseId" element={<TeacherCourseDetail />} />
+        <Route path="subject/:subjectId" element={<TeacherSubjectDetail />} />
+        <Route path="chapter/:chapterId" element={<TeacherChapterDetail />} />
+        <Route path="lesson/:lessonId" element={<TeacherLessonDetail />} />
+        <Route path="lesson/upload" element={<LessonList />} />
+        <Route path="lesson/add" element={<AddLesson />} />
+        <Route path="newlesson/add" element={<TeacherAddLesson />} />
+        <Route path="task/upload" element={<TaskList />} />
+        <Route path="task/add" element={<CreateTask />} />
+        <Route path="task/submitted" element={<SubmissionTeacherView />} />
+        <Route path="submission/:id" element={<SubmissionDetail />} />
+      </Route>
+
+
+      <Route path='/admin' element={<AdminLayout/>}>
+         <Route path="users" element={<UsersAdminView/>} />
+         <Route path="dashboard" element={<AdminDashboard/>} />
+         <Route path="students" element={<StudentsList/>} />
+         <Route path="teachers" element={<TeachersList/>} />
+         <Route path="courses" element={<AdminCourseList/>} />
+         <Route path="course/:id" element={<CourseDetail/>} />
+         <Route path="subject/:id" element={<SubjectDetail />} />
+         <Route path="chapter/:id" element={<ChapterDetail />} />
+         <Route path="lesson/:id" element={<LessonDetail />} /> 
+         <Route path="create-course/" element={<AdminCreateCourse />} />
+         <Route path="create-subject/:courseId" element={<AdminCreateSubject />} />
+         <Route path="add-chapter/:subjectId" element={<AdminCreateChapter />} />
+         <Route path="add-lesson/:chapterId" element={<AdminCreateLesson />} />
+      </Route>
+
         <Route path="/student/homepage" element={<StudentProfileForm />} />
         <Route path="/student/dashboard" element={<StudentHome/>} />
         <Route path="/student/lessons" element={<StudentLessons/>} />
@@ -82,7 +127,7 @@ function App() {
         <Route path="/student/tasks/submit/:taskId" element={<StudentSubmitAssignment/>} />
         <Route path="/student/profile" element={<StudentProfile/>} />
         <Route path="/student/profile/update" element={<StudentProfile/>} />
-        <Route path="/teacher/dashboard" element={<TeacherDashboard/>} />
+        {/* <Route path="/teacher/dashboard" element={<TeacherDashboard/>} /> */}
         <Route path="/teacher/profile" element={<TeacherProfile/>} />
         <Route path="/teacher/lesson/upload" element={<LessonList/>} />
         <Route path="/teacher/lesson/add" element={<AddLesson/>} />
@@ -93,16 +138,12 @@ function App() {
         
 
 
-        <Route path="/admin/users" element={<UsersAdminView/>} />
-        <Route path="/admin/dashboard" element={<AdminDashboard/>} />
-        <Route path="/admin/students" element={<StudentsList/>} />
-        <Route path="/admin/teachers" element={<TeachersList/>} />
-        <Route path="/admin/courses/" element={<AdminCourseList/>} />
-        <Route path="/course/:id" element={<CourseDetail/>} />
-        <Route path="/course/:id/subjects/" element={<SubjectList />} />
-        <Route path="/subject/:id" element={<SubjectDetail />} />
-        <Route path="/chapter/:id" element={<ChapterDetail />} />
-        <Route path="/lesson/:id" element={<LessonDetail />} /> 
+        
+        
+        
+        
+        
+        {/* <Route path="/course/:id/subjects/" element={<SubjectList />} /> */}
 
         {/* <Route path="/student/subjects" element={<StudentSubjectList />} />  */}
         <Route path="/student/subject/:id" element={<StudentSubjectDetail />} />
@@ -120,10 +161,17 @@ function App() {
         <Route path="/teacher/newlesson/add" element={<TeacherAddLesson />} />
         <Route path="/teacher/submission/:id" element={<SubmissionDetail />} />
 
+
+        <Route path="/c" element={<StudentFooter />} />
+        <Route path="/s" element={<SubjectCylinder />} />
+        <Route path="/l" element={<AdBanners />} />
+        
+
         
 
       </Routes>
     </BrowserRouter>
+
   );
 }
 

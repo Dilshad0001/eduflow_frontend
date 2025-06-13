@@ -1,95 +1,3 @@
-// // src/pages/login.jsx
-// import { useState } from 'react';
-// import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
-
-// const Login = () => {
-//   const [form, setForm] = useState({ email: '', password: '' });
-//   const [error, setError] = useState('');
-//   const navigate = useNavigate();
-
-//   const handleChange = (e) => {
-//     setForm({ ...form, [e.target.name]: e.target.value });
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setError('');
-
-//     try {
-//       const res = await axios.post('http://localhost:8000/account/login/', form);
-//       localStorage.setItem('access_token', res.data.access_token);
-//       localStorage.setItem('refresh_token', res.data.refresh_token);
-      
-//       navigate('/'); 
-
-//     } catch (err) {
-//       const message =
-//         typeof err.response?.data === 'string'
-//           ? err.response.data
-//           : 'Login failed';
-//       setError(message);
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-//       <form
-//         onSubmit={handleSubmit}
-//         className="bg-white p-8 rounded shadow-md w-full max-w-md space-y-4"
-//       >
-//         <h2 className="text-2xl font-bold mb-4">Login</h2>
-
-//         <input
-//           type="email"
-//           name="email"
-//           placeholder="Email"
-//           value={form.email}
-//           onChange={handleChange}
-//           className="w-full p-2 border border-gray-300 rounded"
-//           required
-//         />
-
-//         <input
-//           type="password"
-//           name="password"
-//           placeholder="Password"
-//           value={form.password}
-//           onChange={handleChange}
-//           className="w-full p-2 border border-gray-300 rounded"
-//           required
-//         />
-
-//         {error && <p className="text-red-500">{error}</p>}
-
-//         <button
-//           type="submit"
-//           className="w-full bg-green-500 hover:bg-green-600 text-white p-2 rounded"
-//         >
-//           Login
-//         </button>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default Login;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -101,6 +9,7 @@ const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -114,16 +23,11 @@ const Login = () => {
 
     try {
       const res = await axios.post('http://localhost:8000/account/login/', form);
-
-      // Save tokens
       localStorage.setItem('access_token', res.data.access_token);
       localStorage.setItem('refresh_token', res.data.refresh_token);
-
-      // Assuming backend response includes user role like 'ADMIN', 'TEACHER', or 'STUDENT'
-      const userRole = res.data.role;
-      console.log(res.data);
       
-
+      const userRole = res.data.role;
+      
       if (res.data.admin===true) {
         navigate('/admin/dashboard');
       } else if (userRole ===1) {
@@ -131,7 +35,7 @@ const Login = () => {
       } else if (userRole ===2) {
         navigate('/student/dashboard');
       } else {
-        navigate('/student/dashboard'); // fallback
+        navigate('/student/dashboard');
       }
 
     } catch (err) {
@@ -146,21 +50,19 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-100 via-white to-violet-50">
-      <div className="relative w-full max-w-md px-6 py-8 backdrop-blur-lg bg-white/80 rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
-        <div className="absolute -top-20 -right-20 w-64 h-64 bg-violet-300/30 rounded-full filter blur-3xl"></div>
-        <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-violet-400/20 rounded-full filter blur-3xl"></div>
-
-        <div className="relative z-10">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-extrabold text-violet-900 mb-2">Welcome back</h1>
-            <p className="text-violet-600/90">Sign in to continue</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-4xl flex flex-col md:flex-row bg-white rounded-xl shadow-lg overflow-hidden">
+        {/* Left side - Login Form */}
+        <div className="w-full md:w-1/2 p-8 sm:p-10 lg:p-12">
+          <div className="mb-8">
+            <h1 className="text-2xl font-bold text-gray-800 mb-1">EduFlow</h1>
+            <h2 className="text-xl font-semibold text-gray-600">Sign in to your account</h2>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-violet-800/90">Email</label>
-              <div className="relative">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                 <input
                   type="email"
                   id="email"
@@ -168,15 +70,13 @@ const Login = () => {
                   placeholder="your@email.com"
                   value={form.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-violet-200/80 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-300 placeholder-violet-400/60"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-all duration-300 placeholder-gray-400"
                   required
                 />
               </div>
-            </div>
 
-            <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm font-medium text-violet-800/90">Password</label>
-              <div className="relative">
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
                 <input
                   type="password"
                   id="password"
@@ -184,14 +84,34 @@ const Login = () => {
                   placeholder="••••••••"
                   value={form.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-violet-200/80 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-300 placeholder-violet-400/60"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-all duration-300 placeholder-gray-400"
                   required
                 />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={() => setRememberMe(!rememberMe)}
+                    className="h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                    Remember me
+                  </label>
+                </div>
+
+                <a href="/forgot-password" className="text-sm text-gray-600 hover:text-gray-800 hover:underline">
+                  Forgot Password?
+                </a>
               </div>
             </div>
 
             {error && (
-              <div className="bg-red-50/80 border border-red-200 text-red-600 p-3 rounded-xl text-sm backdrop-blur-sm">
+              <div className="bg-red-50 border border-red-100 text-red-600 p-3 rounded-lg text-sm">
                 {error}
               </div>
             )}
@@ -199,7 +119,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full py-3.5 px-6 rounded-xl font-semibold text-white bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-700 hover:to-violet-600 shadow-lg hover:shadow-violet-300/50 transition-all duration-300 ${isLoading ? 'opacity-80 cursor-not-allowed' : ''}`}
+              className={`w-full py-2.5 px-6 rounded-lg font-medium text-white bg-gray-800 hover:bg-gray-700 transition-colors duration-300 ${isLoading ? 'opacity-80 cursor-not-allowed' : ''}`}
             >
               {isLoading ? (
                 <span className="flex items-center justify-center">
@@ -214,13 +134,49 @@ const Login = () => {
               )}
             </button>
 
-            <p className="text-center text-sm text-violet-500/80">
+            <p className="text-center text-sm text-gray-600">
               Don't have an account?{' '}
-              <a href="/register" className="font-medium text-violet-700 hover:underline hover:text-violet-800">
+              <a href="/register" className="font-medium text-gray-800 hover:text-gray-900 hover:underline">
                 Sign up
               </a>
             </p>
           </form>
+        </div>
+
+        {/* Right side - Welcome Content */}
+        <div className="w-full md:w-1/2 bg-gray-100 p-8 sm:p-10 lg:p-12 flex items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800 mb-6">Welcome to EduFlow</h1>
+            <p className="text-gray-700 mb-6">
+              EduFlow helps educators and students to create an organized learning environment with intuitive interfaces. Join thousands who are transforming education.
+            </p>
+            <div className="space-y-4">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 mt-1">
+                  <svg className="h-5 w-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <p className="ml-3 text-gray-700">More than 17k educators and students joined us</p>
+              </div>
+              <div className="flex items-start">
+                <div className="flex-shrink-0 mt-1">
+                  <svg className="h-5 w-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <p className="ml-3 text-gray-700">Find the right courses and learning paths</p>
+              </div>
+              <div className="flex items-start">
+                <div className="flex-shrink-0 mt-1">
+                  <svg className="h-5 w-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <p className="ml-3 text-gray-700">Simple, powerful tools for education management</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

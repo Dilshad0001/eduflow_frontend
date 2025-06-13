@@ -33,7 +33,7 @@ function SubjectDetail() {
 
   return (
     <div className="min-h-screen p-6 bg-gray-100">
-      <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow space-y-6">
+      <div className="max-w-90% mx-auto bg-white p-6 rounded-xl shadow space-y-6">
         <div>
           <h1 className="text-2xl font-bold mb-2">Subject Detail</h1>
           <p className="text-lg">Subject Name: {subject.subject_name}</p>
