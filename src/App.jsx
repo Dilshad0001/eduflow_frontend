@@ -58,9 +58,15 @@ import StudentFooter from './pages/student/StudentFooter';
 import AdBanners from './pages/student/AdBanners';
 
 function App() {
+  const k=0;
+  console.log("k=",k);
+  
   return (
+
     <BrowserRouter>
+    <div className='min-h-screen bg-gray-900 text-white'>
       <Routes>
+        
        
         <Route path="/student" element={<StudentLayout />}>
         <Route path="homepage" element={<StudentProfileForm />} />
@@ -168,8 +174,9 @@ function App() {
         
 
         
-
+      
       </Routes>
+      </div>
     </BrowserRouter>
 
   );

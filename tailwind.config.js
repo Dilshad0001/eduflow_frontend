@@ -10,3 +10,8 @@ export default {
   plugins: [],
   darkMode: 'class', // important for theme switching
 }
+
+
+
+
+

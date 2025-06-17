@@ -5,12 +5,14 @@ import axios from "axios";
 import { BookOpen, ChevronLeft, Clock, Users, Star, Share2, Heart, Calendar, TrendingUp, User, Bell } from "lucide-react";
 import ChapterList from "../admin/ChapterList";
 import StudentChapterList from "./StudentChapterList";
+import { useTheme } from "../../context/ThemeContext";
 
 function StudentSubjectDetail() {
   const { subjectId } = useParams(); // subject id from URL
   const [subject, setSubject] = useState(null);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("access_token");
+  const {darkMode,toggleTheme}=useTheme()
 
   useEffect(() => {
     const fetchSubject = async () => {
@@ -31,6 +33,8 @@ function StudentSubjectDetail() {
 
     fetchSubject();
   }, [subjectId, token]);
+
+  console.log('theme is s subjet detail==',darkMode);
 
   // Loading Component
   if (loading) {

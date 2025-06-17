@@ -5,11 +5,13 @@ import axios from 'axios';
 import SubjectCylinder from './SubjectCylinder';
 import ChapterCylinder from './ChapterCylinder';
 import AdBanners from './AdBanners';
+import { useTheme } from '../../context/ThemeContext';
 
 const StudentHome = () => {
     const navigate = useNavigate();
     const [courses, setCourses] = useState([]);
     const [activeCourseIndex, setActiveCourseIndex] = useState(0); 
+    const {darkMode,toggleTheme}=useTheme()
 
     const [profile, setProfile] = useState(null);
     const [upcomingAssignments, setUpcomingAssignments] = useState([]); 
@@ -36,7 +38,11 @@ const StudentHome = () => {
                 console.error(err);
 
             });
+            // toggleTheme(true)
     }, [navigate]);
+    console.log('theme is s home==',darkMode);
+    
+    
 
     useEffect(() => {
         const fetchUpcomingAssignments = async () => {
