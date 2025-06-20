@@ -45,16 +45,16 @@ const Register = () => {
             <div className="space-y-4">
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="your@email.com"
-                  value={form.email}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-all duration-300 placeholder-gray-400"
-                  required
-                />
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="your@email.com"
+                value={form.email}
+                onChange={handleChange}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-all duration-300 placeholder-gray-400 text-gray-900"
+                required
+             />
               </div>
 
               <div>
@@ -66,7 +66,7 @@ const Register = () => {
                   placeholder="••••••••"
                   value={form.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-all duration-300 placeholder-gray-400"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-all duration-300 placeholder-gray-400 text-gray-900"
                   required
                 />
               </div>
