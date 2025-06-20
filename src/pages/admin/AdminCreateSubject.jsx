@@ -43,16 +43,16 @@ function AdminCreateSubject() {
     }
 
     try {        
-      await axios.post(
-        "http://localhost:8000/adminuser/study/subject/",
+      await axiosInstance.post(
+        "adminuser/study/subject/",
         {
           subject_name: subjectName,
           course: courseList.id
         },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         }
       );
       setSuccessMsg("Subject created successfully!");

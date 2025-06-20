@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Users, Shield, UserCheck, UserX, Search, Filter, RefreshCw } from "lucide-react";
+import axiosInstance from "../../axiosInstance";
 
 export default function UsersListAdminView() {
   const [users, setUsers] = useState([]);
@@ -34,9 +35,9 @@ export default function UsersListAdminView() {
 
     try {
       // Using fetch instead of axios since axios isn't available
-      const response = await fetch("http://localhost:8000/adminuser/userlist/", {
+      const response = await axiosInstance.get("adminuser/userlist/", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });

@@ -76,15 +76,15 @@ const AdminCreateChapter = () => {
         console.log("subject=",subjects);
         
         
-      const response = await axios.post(
-        'http://localhost:8000/adminuser/study/chapter/',
+      const response = await axiosInstance.post(
+        'adminuser/study/chapter/',
         {
           chapter_name: chapterName,
           subject: subjects.id, // Send the subject ID
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            // Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         }

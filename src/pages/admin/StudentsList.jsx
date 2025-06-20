@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { Users, GraduationCap, Search, RefreshCw, Phone, BookOpen, User } from "lucide-react";
+import axiosInstance from '../../axiosInstance';
 
 function StudentsList() {
   const [students, setStudents] = useState([]);
@@ -31,9 +32,9 @@ function StudentsList() {
         return;
       }
 
-      const response = await fetch("http://localhost:8000/adminuser/student/", {
+      const response = await axiosInstance.get("adminuser/student/", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });

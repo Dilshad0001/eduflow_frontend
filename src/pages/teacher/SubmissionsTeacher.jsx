@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import axiosInstance from "../../axiosInstance";
 
 export default function SubmissionsTeacher() {
   const [submissions, setSubmissions] = useState([]);
@@ -11,9 +12,9 @@ export default function SubmissionsTeacher() {
   const fetchSubmissions = async () => {
     try {
       const url = search
-        ? `/http://localhost:8000/teacher/submission/?submission=${encodeURIComponent(search)}`
-        : "/http://localhost:8000/teacher/submission/";
-      const response = await axios.get(url);
+        ? `teacher/submission/?submission=${encodeURIComponent(search)}`
+        : "teacher/submission/";
+      const response = await axiosInstance.get(url);
       setSubmissions(response.data);
     } catch (error) {
       console.error("Failed to fetch submissions:", error);

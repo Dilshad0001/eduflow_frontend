@@ -142,10 +142,10 @@ const StudentHome = () => {
             const token = localStorage.getItem("access_token");
 
             try {
-                const response = await fetch('http://127.0.0.1:8000/student/leaderboard',{
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                const response = await axiosInstance.get('student/leaderboard',{
+                    // headers: {
+                    //     Authorization: `Bearer ${token}`,
+                    // },
                 }
                 );
                 if (!response.ok) {
