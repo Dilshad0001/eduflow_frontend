@@ -1,7 +1,7 @@
 
 import axios from "axios";
 const axiosInstance = axios.create({
-  baseURL:"https://eduflow-backend-2-kjdp.onrender.com/",  
+  baseURL:"https://eduflow-backend-4-mv0y.onrender.com/",  
 });
 
 axiosInstance.interceptors.request.use((config) => {
