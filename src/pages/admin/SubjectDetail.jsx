@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ChapterList from "./ChapterList"; // 👈 Import the ChapterList component
+import axiosInstance from "../../axiosInstance";
 
 function SubjectDetail() {
   const { id } = useParams(); // subject id from URL
@@ -12,10 +13,10 @@ function SubjectDetail() {
   useEffect(() => {
     const fetchSubject = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/adminuser/study/subject/${id}/`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await axiosInstance.get(`adminuser/study/subject/${id}/`, {
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         });
         setSubject(response.data);
       } catch (error) {

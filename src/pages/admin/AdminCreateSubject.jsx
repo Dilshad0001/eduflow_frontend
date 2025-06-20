@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import axiosInstance from "../../axiosInstance";
 
 function AdminCreateSubject() {
   const [subjectName, setSubjectName] = useState("");
@@ -17,10 +18,10 @@ function AdminCreateSubject() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/adminuser/study/subject/${courseId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await axiosInstance.get(`adminuser/study/subject/${courseId}`, {
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         });
         setCourseList(response.data);
       } catch (err) {

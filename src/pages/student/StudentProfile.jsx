@@ -15,6 +15,7 @@ import {
   Loader2,
   ChevronDown,
 } from 'lucide-react';
+import axiosInstance from '../../axiosInstance';
 
 const StudentProfile = () => {
   const [profile, setProfile] = useState(null);
@@ -29,10 +30,10 @@ const StudentProfile = () => {
     const fetchProfile = async () => {
       try {
         // Keep the axios call to the backend for data fetch
-        const res = await axios.get('http://127.0.0.1:8000/student/profile/', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-          },
+        const res = await axiosInstance.get('student/profile/', {
+          // headers: {
+          //   Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          // },
         });
 
         if (res.data) {

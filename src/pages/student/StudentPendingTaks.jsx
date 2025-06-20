@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Grid3X3, List, Clock, Calendar, Users, UserX, FileDown, Send, AlertTriangle, CheckCircle, Star, XCircle, UploadCloud } from "lucide-react"; // Added XCircle and UploadCloud for file upload UI
+import axiosInstance from "../../axiosInstance";
 
 const StudentPendingTasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -31,10 +32,10 @@ const StudentPendingTasks = () => {
       }
 
       try {
-        const res = await axios.get("http://localhost:8000/student/task/", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const res = await axiosInstance.get("student/task/", {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
         });
         setTasks(res.data);
         setError("");
@@ -89,8 +90,8 @@ const StudentPendingTasks = () => {
     formData.append('assignment', taskId);
 
     try {
-      await axios.post(
-        `http://localhost:8000/student/submission/?taskId=${taskId}`,
+      await axiosInstance.post(
+        `student/submission/?taskId=${taskId}`,
         formData,
         {
           headers: {

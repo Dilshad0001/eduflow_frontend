@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Play, ChevronRight, Clock, CheckCircle, AlertCircle, Video, Grid3X3, List, BookOpen, Eye } from "lucide-react";
+import axiosInstance from "../../axiosInstance";
 
 function StudentLessonList({ chapterId }) {
   const [lessons, setLessons] = useState([]);
@@ -43,12 +44,12 @@ function StudentLessonList({ chapterId }) {
       setError(null);
 
       try {
-        const response = await axios.get(
-          `http://localhost:8000/student/lesson/?chapterId=${chapterId}`,
+        const response = await axiosInstance.get(
+          `student/lesson/?chapterId=${chapterId}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            // headers: {
+            //   Authorization: `Bearer ${token}`,
+            // },
           }
         );
         setLessons(response.data);

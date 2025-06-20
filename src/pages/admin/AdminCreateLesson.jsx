@@ -2,6 +2,7 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import axiosInstance from "../../axiosInstance";
 
 function AdminCreateLesson() {
   const location = useLocation();
@@ -49,14 +50,14 @@ function AdminCreateLesson() {
     }
 
     try {
-      await axios.post(
-        "http://localhost:8000/teacher/task/lesson/",
+      await axiosInstance.post(
+        "teacher/task/lesson/",
         formData,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          //   "Content-Type": "multipart/form-data",
+          // },
         }
       );
       setSuccess("Lesson added successfully!");

@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Grid3X3, List, Clock, Calendar, FileText, Download, Star, Award, CheckCircle, AlertTriangle, BookOpen, ExternalLink } from "lucide-react";
+import axiosInstance from "../../axiosInstance";
 
 const StudentSubmissionView = () => {
   const [submissions, setSubmissions] = useState([]);
@@ -25,10 +26,10 @@ const StudentSubmissionView = () => {
       }
 
       try {
-        const res = await axios.get("http://localhost:8000/student/submission/", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const res = await axiosInstance.get("student/submission/", {
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         });
         setSubmissions(res.data);
         setError("");

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { BookOpen, Users, Clock, ChevronRight, AlertCircle, Grid3X3, List, Search, Filter } from 'lucide-react';
+import axiosInstance from '../../axiosInstance';
 
 const TeacherSubjectList = ({ courseId }) => {
   const [subjects, setSubjects] = useState([]);
@@ -27,10 +28,10 @@ const TeacherSubjectList = ({ courseId }) => {
       }
 
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/teacher/subject/?courseId=${courseId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await axiosInstance.get(`teacher/subject/?courseId=${courseId}`, {
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         });
         setSubjects(response.data);
         setError('');

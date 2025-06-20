@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BookOpen, Users, Clock, ChevronRight, AlertCircle, FileText, Play, Grid3X3, List, Search, Filter } from "lucide-react";
+import axiosInstance from "../../axiosInstance";
 
 function TeacherChapterList({ subjectId }) {
   const [chapters, setChapters] = useState([]);
@@ -25,12 +26,12 @@ function TeacherChapterList({ subjectId }) {
       try {
         console.log("user=",token.user);
         
-        const response = await axios.get(
-          `http://localhost:8000/teacher/chapter/?subjectId=${subjectId}`,
+        const response = await axiosInstance.get(
+          `teacher/chapter/?subjectId=${subjectId}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            // headers: {
+            //   Authorization: `Bearer ${token}`,
+            // },
           }
         );
         setChapters(response.data);

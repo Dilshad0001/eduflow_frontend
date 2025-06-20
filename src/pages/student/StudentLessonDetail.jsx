@@ -5,6 +5,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import axiosInstance from "../../axiosInstance";
 
 function StudentLessonDetail() {
   const { lessonId } = useParams();
@@ -17,10 +18,10 @@ function StudentLessonDetail() {
   useEffect(() => {
     const fetchLesson = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/student/lesson/?lessonId=${lessonId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await axiosInstance.get(`student/lesson/?lessonId=${lessonId}`, {
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         });
         setLesson(response.data);
       } catch (err) {

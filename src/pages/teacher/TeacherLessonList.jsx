@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import axiosInstance from "../../axiosInstance";
 
 function TeacherLessonList({ chapterId }) {
   const [lessons, setLessons] = useState([]);
@@ -21,12 +22,12 @@ function TeacherLessonList({ chapterId }) {
       setError(null);
 
       try {
-        const response = await axios.get(
-          `http://localhost:8000/teacher/task/lesson/?chapterId=${chapterId}`,
+        const response = await axiosInstance.get(
+          `teacher/task/lesson/?chapterId=${chapterId}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            // headers: {
+            //   Authorization: `Bearer ${token}`,
+            // },
           }
         );
         setLessons(response.data);

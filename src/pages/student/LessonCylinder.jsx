@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 
 
 // student/subject
@@ -28,10 +29,10 @@ const LessonCylinder = ({chapterId,chapterName}) => {
             }
 
             try {
-                const response = await axios.get(`http://localhost:8000/student/lesson/?chapterId=${chapterId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                const response = await axiosInstance.get(`student/lesson/?chapterId=${chapterId}`, {
+                    // headers: {
+                    //     Authorization: `Bearer ${token}`,
+                    // },
                 });
                 console.log(response.data);
                 

@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../axiosInstance';
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -22,7 +23,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:8000/account/login/', form);
+      const res = await axiosInstance.post('account/login/', form);
       localStorage.setItem('access_token', res.data.access_token);
       localStorage.setItem('refresh_token', res.data.refresh_token);
       

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import LessonList from "./LessonList";
 import TeacherLessonList from "./TeacherLessonList";
+import axiosInstance from "../../axiosInstance";
 
 function TeacherChapterDetail() {
   const { chapterId } = useParams();
@@ -13,12 +14,12 @@ function TeacherChapterDetail() {
   useEffect(() => {
     const fetchChapter = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8000/teacher/chapter/?chapterId=${chapterId}`,
+        const response = await axiosInstance.get(
+          `teacher/chapter/?chapterId=${chapterId}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            // headers: {
+            //   Authorization: `Bearer ${token}`,
+            // },
           }
         );
         console.log("res==",response.data);

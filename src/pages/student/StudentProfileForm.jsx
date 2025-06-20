@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../axiosInstance';
 
 const StudentProfileForm = () => {
   const [form, setForm] = useState({
@@ -18,8 +19,8 @@ const StudentProfileForm = () => {
     // Fetch all courses
     const fetchCourses = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/student/course/', {
-          headers: { Authorization: `Bearer ${token}` },
+        const res = await axiosInstance.get('student/course/', {
+          // headers: { Authorization: `Bearer ${token}` },
         });
         setCourses(res.data);
       } catch (err) {
@@ -38,13 +39,13 @@ const StudentProfileForm = () => {
     setError('');
 
     try {
-      await axios.post(
-        'http://localhost:8000/student/personal/profile/',
+      await axiosInstance.post(
+        'student/personal/profile/',
         form,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         }
       );
       navigate('/student/homepage');

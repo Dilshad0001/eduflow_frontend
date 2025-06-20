@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PlusCircle, BookOpen, AlertCircle, CheckCircle } from 'lucide-react';
+import axiosInstance from '../../axiosInstance';
 
 const AdminCreateChapter = () => {
   const [chapterName, setChapterName] = useState('');
@@ -29,10 +30,10 @@ const AdminCreateChapter = () => {
 
       try {
         // Assuming your subject list endpoint is similar to the one used in SubjectList
-        const response = await axios.get(`http://127.0.0.1:8000/adminuser/study/subject/${subjectId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await axiosInstance.get(`adminuser/study/subject/${subjectId}`, {
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         });
         setSubjects(response.data);
         // Optionally pre-select the first subject if available

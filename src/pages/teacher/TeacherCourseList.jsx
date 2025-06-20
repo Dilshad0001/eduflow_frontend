@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { BookOpen, Users, Clock, ChevronRight, Grid3X3, List, Search, Filter } from "lucide-react";
+import axiosInstance from "../../axiosInstance";
 
 function TeacherCourseList() {
   const [courses, setCourses] = useState([]);
@@ -16,12 +17,12 @@ function TeacherCourseList() {
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        "http://localhost:8000/teacher/course",
+      const response = await axiosInstance.get(
+        "teacher/course",
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         }
       );
       setCourses(response.data);

@@ -6,6 +6,7 @@ import SubjectCylinder from './SubjectCylinder';
 import ChapterCylinder from './ChapterCylinder';
 import AdBanners from './AdBanners';
 import { useTheme } from '../../context/ThemeContext';
+import axiosInstance from '../../axiosInstance';
 
 const StudentHome = () => {
     const navigate = useNavigate();
@@ -21,11 +22,11 @@ const StudentHome = () => {
 
 
     useEffect(() => {
-        axios
-            .get('http://127.0.0.1:8000/student/personal/profile/', {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-                },
+        axiosInstance
+            .get('student/personal/profile/', {
+                // headers: {
+                //     Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+                // },
             })
             .then((res) => {
                 if (Array.isArray(res.data) && res.data.length > 0) {
@@ -57,10 +58,10 @@ const StudentHome = () => {
             }
 
             try {
-                const res = await axios.get("http://localhost:8000/student/task/", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                const res = await axiosInstance.get("student/task/", {
+                    // headers: {
+                    //     Authorization: `Bearer ${token}`,
+                    // },
                 });
 
                 const formattedAssignments = res.data.map(task => ({

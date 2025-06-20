@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../axiosInstance";
 
 function AdminCreateCourse() {
   const [courseName, setCourseName] = useState("");
@@ -21,8 +22,8 @@ function AdminCreateCourse() {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/adminuser/study/course/",
+      const response = await axiosInstance.post(
+        "adminuser/study/course/",
         { course_name: courseName },
         {
           headers: {

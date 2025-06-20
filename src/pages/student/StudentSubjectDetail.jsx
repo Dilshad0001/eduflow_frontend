@@ -6,6 +6,7 @@ import { BookOpen, ChevronLeft, Clock, Users, Star, Share2, Heart, Calendar, Tre
 import ChapterList from "../admin/ChapterList";
 import StudentChapterList from "./StudentChapterList";
 import { useTheme } from "../../context/ThemeContext";
+import axiosInstance from "../../axiosInstance";
 
 function StudentSubjectDetail() {
   const { subjectId } = useParams(); // subject id from URL
@@ -17,10 +18,10 @@ function StudentSubjectDetail() {
   useEffect(() => {
     const fetchSubject = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/student/subject/?subjectId=${subjectId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await axiosInstance.get(`student/subject/?subjectId=${subjectId}`, {
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         });
         console.log(response.data);
         setSubject(response.data);

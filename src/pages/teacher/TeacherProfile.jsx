@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../axiosInstance';
 
 const TeacherProfile = () => {
   const [profile, setProfile] = useState(null);
@@ -13,10 +14,10 @@ const TeacherProfile = () => {
 
   useEffect(() => {
     console.log("1");
-    axios.get('http://127.0.0.1:8000/teacher/profile/', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-      },
+    axiosInstance.get('teacher/profile/', {
+      // headers: {
+      //   Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      // },
     })
       .then((res) => {
         console.log("2");

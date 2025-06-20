@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { Search, Filter, Grid, List, BookOpen, Clock, TrendingUp, Star, ChevronRight, User, Bell, Calendar } from "lucide-react";
+import axiosInstance from "../../axiosInstance";
 
 const StudentSubjectList = () => {
   const [subjects, setSubjects] = useState([]);
@@ -19,6 +20,7 @@ const StudentSubjectList = () => {
     assignments: Math.floor(Math.random() * 10) + 1,
     lastAccessed: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toLocaleDateString()
   });
+  
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -33,10 +35,10 @@ const StudentSubjectList = () => {
       }
 
       try {
-        const response = await axios.get("http://127.0.0.1:8000/student/subject", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await axiosInstance.get("student/subject", {
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         });
         console.log(response.data);
         

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { BookOpen, ChevronLeft, Clock, Users, Star, Share2, Heart, Calendar, TrendingUp, User, Bell, Play } from "lucide-react";
 import StudentLessonList from "./StudentLessonList";
+import axiosInstance from "../../axiosInstance";
 
 function StudentChapterDetail() {
     const { chapterid } = useParams();
@@ -32,12 +33,12 @@ function StudentChapterDetail() {
 
             try {
                 console.log(`Fetching chapter details for ID: ${chapterid}`);
-                const response = await axios.get(
-                    `http://127.0.0.1:8000/student/chapter/?chapterId=${chapterid}`,
+                const response = await axiosInstance.get(
+                    `student/chapter/?chapterId=${chapterid}`,
                     {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
+                        // headers: {
+                        //     Authorization: `Bearer ${token}`,
+                        // },
                     }
                 );
                 console.log("Chapter details fetched:", response.data);

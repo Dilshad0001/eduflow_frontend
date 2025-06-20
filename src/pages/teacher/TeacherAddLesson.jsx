@@ -3,6 +3,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react"; 
 import axios from "axios";
+import axiosInstance from "../../axiosInstance";
 
 function TeacherAddLesson() {
   const location = useLocation();
@@ -27,12 +28,12 @@ function TeacherAddLesson() {
    useEffect(() => {
     const fetchChapter = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8000/teacher/chapter/?chapterId=${chapterId}`,
+        const response = await axiosInstance.get(
+          `teacher/chapter/?chapterId=${chapterId}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            // headers: {
+            //   Authorization: `Bearer ${token}`,
+            // },
           }
         );
         
@@ -75,12 +76,12 @@ function TeacherAddLesson() {
     }
 
     try {
-      await axios.post(
-        "http://localhost:8000/teacher/task/lesson/",
+      await axiosInstance.post(
+        "teacher/task/lesson/",
         formData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            // Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
         }

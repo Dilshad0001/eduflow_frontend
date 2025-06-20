@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../axiosInstance';
 
 const StudentProfileUpdate = () => {
   const [form, setForm] = useState({
@@ -20,8 +21,8 @@ const StudentProfileUpdate = () => {
     const headers = { Authorization: `Bearer ${token}` };
 
     // Fetch profile
-    axios
-      .get('http://127.0.0.1:8000/student/personal/profile/', { headers })
+    axiosInstance
+      .get('student/personal/profile/', { headers })
       .then((res) => {
         if (res.data.length > 0) {
           setProfile(res.data[0]);
@@ -37,8 +38,8 @@ const StudentProfileUpdate = () => {
       });
 
     // Fetch courses
-    axios
-      .get('http://127.0.0.1:8000/api/course-list/', { headers })
+    axiosInstance
+      .get('api/course-list/', { headers })
       .then((res) => setCourses(res.data))
       .catch((err) => setError('Error fetching courses'));
   }, []);
@@ -58,13 +59,13 @@ const StudentProfileUpdate = () => {
     };
 
     try {
-      await axios.put(
-        `http://127.0.0.1:8000/student/personal/profile/${profileId}/`,
+      await axiosInstance.put(
+        `student/personal/profile/${profileId}/`,
         dataToSend,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         }
       );
       navigate('/student/profile');

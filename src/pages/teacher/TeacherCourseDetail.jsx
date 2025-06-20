@@ -1,11 +1,3 @@
-// No subjects found for this course
-
-
-
-
-
-
-
 
 
 import { useParams } from "react-router-dom";
@@ -13,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { BookOpen, Users, Clock, ChevronRight } from "lucide-react";
 import TeacherSubjectList from "./TeacherSubjectList";
+import axiosInstance from "../../axiosInstance";
 
 function TeacherCourseDetail() {
   const { courseId } = useParams();
@@ -24,12 +17,12 @@ function TeacherCourseDetail() {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8000/teacher/course/?courseId=${courseId}`,
+        const response = await axiosInstance.get(
+          `teacher/course/?courseId=${courseId}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            // headers: {
+            //   Authorization: `Bearer ${token}`,
+            // },
           }
         );
         setCourse(response.data);

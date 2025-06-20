@@ -30,6 +30,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 
 const StudentNavbar = () => {
   const navigate = useNavigate();
@@ -70,12 +71,12 @@ const StudentNavbar = () => {
       if (refreshToken) {
         // Optional: Call your backend logout endpoint to invalidate the refresh token
         // This assumes your backend has a /account/logout/ endpoint
-        await axios.post('http://localhost:8000/account/logout/', {
+        await axiosInstance.post('account/logout/', {
           refresh: refreshToken
         }, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`
-          }
+          // headers: {
+          //   Authorization: `Bearer ${localStorage.getItem('access_token')}`
+          // }
         });
       }
     } catch (error) {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 
 const StudentLessons = () => {
   const [lessons, setLessons] = useState([]);
@@ -10,10 +11,10 @@ const StudentLessons = () => {
   useEffect(() => {
     const fetchLessons = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/student/lesson/', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const res = await axiosInstance.get('student/lesson/', {
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         });
         setLessons(res.data);
       } catch (err) {

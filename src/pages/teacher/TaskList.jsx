@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Grid3X3, List, Search, Filter, ChevronRight, BookOpen, Users, Clock, AlertCircle } from 'lucide-react';
+import axiosInstance from '../../axiosInstance';
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
@@ -35,8 +36,8 @@ const TaskList = () => {
     }
 
     try {
-      const res = await axios.get('http://localhost:8000/teacher/task/question', {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await axiosInstance.get('teacher/task/question', {
+        // headers: { Authorization: `Bearer ${token}` },
         params: { search: query },
       });
       setTasks(res.data);
