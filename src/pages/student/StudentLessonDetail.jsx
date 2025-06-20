@@ -144,7 +144,7 @@ function StudentLessonDetail() {
   onPause={handleVideoPause}
 >
   {/* <source src={`http://localhost:8000${lesson.video}`} type="video/mp4" /> */}
-  <source src={`${process.env.VITE_API_BASE_URL}${lesson.video}`} type="video/mp4" />
+  <source src={`${import.meta.env.VITE_API_BASE_URL}${lesson.video}`} type="video/mp4" />
   Your browser does not support the video tag.
 </video>
 

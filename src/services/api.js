@@ -1,5 +1,5 @@
 // const BASE_URL = "http://localhost:8000"; // Adjust if needed
-const BASE_URL=VITE_API_BASE_URL
+// const BASE_URL=VITE_API_BASE_URL
 // const BASE_URL = "http://localhost:8000"; // Adjust if needed
 
 export async function getCourses() {
